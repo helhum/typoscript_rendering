@@ -29,6 +29,7 @@ namespace Helhum\TyposcriptRendering\Renderer;
 
 use Helhum\TyposcriptRendering\Mvc\Response;
 use Helhum\TyposcriptRendering\Mvc\Request;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\ContentObject\ContentObjectRenderer;
 
 /**
@@ -44,13 +45,58 @@ class RecordRenderer implements RenderingInterface {
 	 */
 	public function renderRequest(Request $request, Response $response, RenderingContext $renderingContext) {
 		$contentObjectRenderer = new ContentObjectRenderer();
-
-		$content = $contentObjectRenderer->cObjGetSingle('RECORDS', array(
-			'source' => $request->getArgument('record'),
-			'tables' => $request->hasArgument('table') ? $request->getArgument('table') : 'tt_content',
-			'conf.' => $request->hasArgument('renderingConfiguration') ? $request->getArgument('renderingConfiguration') : array('tt_content' => '< tt_content')
-		));
-
+		$content = $contentObjectRenderer->cObjGetSingle('RECORDS', $this->resolveRenderingConfiguration($request, $renderingContext));
 		$response->setContent($content);
+	}
+
+	/**
+	 * Whether the required arguments for rendering are present or not
+	 *
+	 * @param Request $request
+	 * @return bool
+	 */
+	public function canRender(Request $request) {
+		return $request->hasArgument('record') || $request->hasArgument('path');
+	}
+
+	/**
+	 * @param Request $request
+	 * @param RenderingContext $renderingContext
+	 * @return array
+	 */
+	protected function resolveRenderingConfiguration(Request $request, RenderingContext $renderingContext) {
+		if ($request->hasArgument('path')) {
+			$renderingPath = $request->getArgument('path');
+		}
+		if ($request->hasArgument('record')) {
+			if (strpos($request->getArgument('record'), '_') !== FALSE) {
+				list($table, $id) = GeneralUtility::revExplode('_', $request->getArgument('record'), 2);
+			} else {
+				$id = $request->getArgument('record');
+			}
+		}
+		if ($request->hasArgument('table')) {
+			$table = $request->getArgument('table');
+		}
+
+		if (isset($renderingPath) && !isset($table) && !isset($id)) {
+			$table = 'pages';
+			$id = $renderingContext->getFrontendController()->id;
+		}
+
+		if (isset($id) && !isset($table)) {
+			$table = 'tt_content';
+		}
+
+		$configuration = array();
+
+		$configuration['source'] = $table . '_' . $id;
+		$configuration['tables'] = $table;
+
+		if (isset($renderingPath)) {
+			$configuration['conf.'][$table] = '< ' . $renderingPath;
+		}
+
+		return $configuration;
 	}
 }

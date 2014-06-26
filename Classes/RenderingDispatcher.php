@@ -33,7 +33,6 @@ use Helhum\TyposcriptRendering\Mvc\Response;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 use Helhum\TyposcriptRendering\Renderer\RenderingInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -52,51 +51,34 @@ class RenderingDispatcher {
 	protected $requestBuilder;
 
 	/**
-	 * @var Request
+	 * @var array
 	 */
-	protected $request;
-
-	/**
-	 * @var Response
-	 */
-	protected $response;
+	protected $renderer = array();
 
 	/**
 	 * @param RequestBuilder $requestBuilder
+	 * @param array $renderer
 	 */
-	public function __construct(RequestBuilder $requestBuilder = NULL) {
+	public function __construct(RequestBuilder $requestBuilder = NULL, $renderer = array()) {
 		$this->requestBuilder = $requestBuilder ?: new RequestBuilder();
+		$this->renderer = $renderer ?: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['typoscript_rendering']['renderClasses'];
 	}
 
 	/**
 	 * @param TypoScriptFrontendController $typoScriptFrontendController
-	 * @throws Exception
 	 */
 	public function checkDataSubmission(TypoScriptFrontendController $typoScriptFrontendController) {
 		// Do not do anything in this hook, if there are no parameters
 		if ($typoScriptFrontendController->isGeneratePage() && GeneralUtility::_GP($this->argumentNamespace)) {
 			$this->ensureRequiredEnvironment();
-			$this->request = $this->requestBuilder->build(GeneralUtility::_GP($this->argumentNamespace));
-			$this->response = new Response();
-			if (!$this->request->hasArgument('renderer')) {
-				throw new Exception('No renderer specified!', 1403628294);
-			}
+			$request = $this->requestBuilder->build(GeneralUtility::_GP($this->argumentNamespace));
+			$response = new Response();
 
-			$rendererClassName = $this->request->getArgument('renderer');
-			if (strpos($rendererClassName, '\\') === FALSE) {
-				$rendererClassName = 'Helhum\\TyposcriptRendering\\Renderer\\' . ucfirst($rendererClassName) . 'Renderer';
-			}
-
-			if (!class_exists($rendererClassName) || !in_array('Helhum\\TyposcriptRendering\\Renderer\\RenderingInterface', class_implements($rendererClassName), TRUE)) {
-				throw new Exception(sprintf('Renderer of class "%s" does not implement rendering interface', $rendererClassName), 1403631454);
-			}
-
+			$renderer = $this->resolveRenderer($request);
 			$renderingContext = new RenderingContext($typoScriptFrontendController);
-			/** @var RenderingInterface $renderer */
-			$renderer = new $rendererClassName();
-			$renderer->renderRequest($this->request, $this->response, $renderingContext);
+			$renderer->renderRequest($request, $response, $renderingContext);
 
-			$typoScriptFrontendController->content = $this->response->getContent();
+			$typoScriptFrontendController->content = $response->getContent();
 			$typoScriptFrontendController->config['config']['pageGenScript'] = 'EXT:typoscript_rendering/Scripts/DummyRendering.php';
 		}
 	}
@@ -108,5 +90,36 @@ class RenderingDispatcher {
 		if (empty($GLOBALS['TYPO3_CONF_VARS']['FE']['pageNotFoundOnCHashError'])) {
 			throw new Exception('$GLOBALS[\'TYPO3_CONF_VARS\'][\'FE\'][\'pageNotFoundOnCHashError\'] needs to be enabled when using out of bound typoscript rendering!', 1403808246);
 		}
+		if (empty($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['typoscript_rendering']['renderClasses']) || !is_array($GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['typoscript_rendering']['renderClasses'])) {
+			throw new Exception('No renderer found in configuration: $GLOBALS[\'TYPO3_CONF_VARS\'][\'EXTCONF\'][\'typoscript_rendering\'][\'renderClasses\']', 1403808247);
+		}
+		if (!in_array('tx_typoscriptrendering[context]', $GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['requireCacheHashPresenceParameters'], TRUE)) {
+			throw new Exception('tx_typoscriptrendering[context] must be set as required cHash parameter', 1403808248);
+		}
+	}
+
+	/**
+	 * @param Request $request
+	 * @return RenderingInterface
+	 * @throws Exception
+	 */
+	protected function resolveRenderer(Request $request) {
+		/** @var RenderingInterface $renderer */
+		if ($request->hasArgument('renderer') && isset($this->renderer[$request->getArgument('renderer')])) {
+			$rendererClassName = $this->renderer[$request->getArgument('renderer')];
+			$renderer = new $rendererClassName();
+			if ($renderer->canRender($request)) {
+				return $renderer;
+			}
+		}
+
+		foreach ($this->renderer as $rendererClassName) {
+			$renderer = new $rendererClassName();
+			if ($renderer->canRender($request)) {
+				return $renderer;
+			}
+		}
+
+		throw new Exception('No renderer found for this request!', 1403628294);
 	}
 }
