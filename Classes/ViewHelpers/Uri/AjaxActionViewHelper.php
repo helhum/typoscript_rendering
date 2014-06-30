@@ -15,15 +15,15 @@ namespace Helhum\TyposcriptRendering\ViewHelpers\Uri;
  *                                                                        */
 
 /**
- * A view helper for creating URIs to extbase actions.
+ * A view helper for creating "Ajax" URIs to extbase actions.
  *
  * = Examples =
  *
  * <code title="URI to the show-action of the current controller">
- * <f:uri.action action="show" />
+ * <h:uri.action action="show" />
  * </code>
  * <output>
- * index.php?id=123&tx_myextension_plugin[action]=show&tx_myextension_plugin[controller]=Standard&cHash=xyz
+ * index.php?id=123&tx_typoscriptrendering[context]={"record":"tt_content_123","path":"tt_content.list.20.myextension_plugin"}&tx_myextension_plugin[action]=show&tx_myextension_plugin[controller]=Standard&cHash=xyz
  * (depending on the current page and your TS configuration)
  * </output>
  */
