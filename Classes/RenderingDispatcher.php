@@ -69,9 +69,9 @@ class RenderingDispatcher {
 	 */
 	public function checkDataSubmission(TypoScriptFrontendController $typoScriptFrontendController) {
 		// Do not do anything in this hook, if there are no parameters
-		if ($typoScriptFrontendController->isGeneratePage() && GeneralUtility::_GP($this->argumentNamespace)) {
+		if ($typoScriptFrontendController->isGeneratePage() && GeneralUtility::_GET($this->argumentNamespace)) {
 			$this->ensureRequiredEnvironment();
-			$request = $this->requestBuilder->build(GeneralUtility::_GP($this->argumentNamespace));
+			$request = $this->requestBuilder->build(GeneralUtility::_GET($this->argumentNamespace));
 			$response = new Response();
 
 			$renderer = $this->resolveRenderer($request);
