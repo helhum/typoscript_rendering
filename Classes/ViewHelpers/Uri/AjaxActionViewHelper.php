@@ -74,19 +74,22 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
 		$additionalParams['tx_typoscriptrendering']['context'] = json_encode($ajaxContext);
 
 		$uriBuilder = $this->controllerContext->getUriBuilder();
-		$uri = $uriBuilder
-				->reset()
-				->setTargetPageUid($pageUid)
-				->setUseCacheHash(TRUE)
-				->setSection($section)
-				->setFormat($format)
-				->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
-				->setArguments($additionalParams)
-				->setCreateAbsoluteUri($absolute)
-				->setAddQueryString($addQueryString)
-				->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString)
-				->setAddQueryStringMethod($addQueryStringMethod)
-				->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
-		return $uri;
+		$uriBuilder->reset()
+			->setTargetPageUid($pageUid)
+			->setUseCacheHash(TRUE)
+			->setSection($section)
+			->setFormat($format)
+			->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
+			->setArguments($additionalParams)
+			->setCreateAbsoluteUri($absolute)
+			->setAddQueryString($addQueryString)
+			->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString);
+
+		// TYPO3 6.0 compatibility check:
+		if (method_exists($uriBuilder, 'setAddQueryStringMethod')) {
+			$uriBuilder->setAddQueryStringMethod($this->arguments['addQueryStringMethod']);
+		}
+
+		return $uriBuilder->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
 	}
 }

@@ -95,17 +95,20 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
 		$uriBuilder = $this->controllerContext->getUriBuilder();
 		$argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
 
-		$uri = $uriBuilder
-				->reset()
-				->setArguments(array_merge(array($argumentPrefix => $arguments), $additionalParams))
-				->setSection($this->arguments['section'])
-				->setAddQueryString(TRUE)
-				->setAddQueryStringMethod($this->arguments['addQueryStringMethod'])
-				->setArgumentsToBeExcludedFromQueryString(array($argumentPrefix, 'cHash'))
-				->setFormat($this->arguments['format'])
-				->setUseCacheHash(TRUE)
-				->build();
-		return $uri;
+		$uriBuilder->reset()
+			->setArguments(array_merge(array($argumentPrefix => $arguments), $additionalParams))
+			->setSection($this->arguments['section'])
+			->setAddQueryString(TRUE)
+			->setArgumentsToBeExcludedFromQueryString(array($argumentPrefix, 'cHash'))
+			->setFormat($this->arguments['format'])
+			->setUseCacheHash(TRUE);
+
+		// TYPO3 6.0 compatibility check:
+		if (method_exists($uriBuilder, 'setAddQueryStringMethod')) {
+			$uriBuilder->setAddQueryStringMethod($this->arguments['addQueryStringMethod']);
+		}
+
+		return $uriBuilder->build();
 	}
 
 	/**
@@ -126,13 +129,18 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
 		if ($this->hasArgument('addQueryStringMethod') && $this->arguments['addQueryStringMethod'] !== '') {
 			$arguments['addQueryStringMethod'] = $this->arguments['addQueryStringMethod'];
 		}
-		return $uriBuilder->reset()
-				->setArguments(array($argumentPrefix => $arguments))
-				->setSection($this->arguments['section'])
-				->setAddQueryString(TRUE)
-				->setAddQueryStringMethod($this->arguments['addQueryStringMethod'])
-				->setArgumentsToBeExcludedFromQueryString(array($argumentPrefix, 'cHash'))
-				->setFormat($this->arguments['format'])
-				->build();
+		$uriBuilder->reset()
+			->setArguments(array($argumentPrefix => $arguments))
+			->setSection($this->arguments['section'])
+			->setAddQueryString(TRUE)
+			->setArgumentsToBeExcludedFromQueryString(array($argumentPrefix, 'cHash'))
+			->setFormat($this->arguments['format']);
+
+		// TYPO3 6.0 compatibility check:
+		if (method_exists($uriBuilder, 'setAddQueryStringMethod')) {
+			$uriBuilder->setAddQueryStringMethod($this->arguments['addQueryStringMethod']);
+		}
+
+		return $uriBuilder->build();
 	}
 }
