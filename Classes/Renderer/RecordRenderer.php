@@ -79,12 +79,12 @@ class RecordRenderer implements RenderingInterface {
 			$table = $request->getArgument('table');
 		}
 
-		if (isset($renderingPath) && !isset($table) && !isset($id)) {
+		if (empty($table) && empty($id)) {
 			$table = 'pages';
 			$id = $renderingContext->getFrontendController()->id;
 		}
 
-		if (isset($id) && !isset($table)) {
+		if (!empty($id) && empty($table)) {
 			$table = 'tt_content';
 		}
 
@@ -93,7 +93,7 @@ class RecordRenderer implements RenderingInterface {
 		$configuration['source'] = $table . '_' . $id;
 		$configuration['tables'] = $table;
 
-		if (isset($renderingPath)) {
+		if (!empty($renderingPath)) {
 			$configuration['conf.'][$table] = '< ' . $renderingPath;
 		}
 

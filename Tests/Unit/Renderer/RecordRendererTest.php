@@ -63,6 +63,10 @@ class RecordRendererTest extends UnitTestCase {
 				array('record' => '2', 'table' => 'tx_bar'),
 				array('source' => 'tx_bar_2', 'tables' => 'tx_bar'),
 			),
+			'record with empty table' => array(
+				array('record' => '2', 'table' => ''),
+				array('source' => 'tt_content_2', 'tables' => 'tt_content'),
+			),
 			'path only' => array(
 				array('path' => 'lib.foo'),
 				array('source' => 'pages_42', 'tables' => 'pages', 'conf.' => array('pages' => '< lib.foo')),
@@ -70,6 +74,26 @@ class RecordRendererTest extends UnitTestCase {
 			'record with path' => array(
 				array('record' => '1', 'path' => 'lib.bar'),
 				array('source' => 'tt_content_1', 'tables' => 'tt_content', 'conf.' => array('tt_content' => '< lib.bar')),
+			),
+			'wrong record with path' => array(
+				array('record' => '_', 'path' => 'lib.bar'),
+				array('source' => 'pages_42', 'tables' => 'pages', 'conf.' => array('pages' => '< lib.bar')),
+			),
+			'empty record with path' => array(
+				array('record' => '', 'path' => 'lib.bar'),
+				array('source' => 'pages_42', 'tables' => 'pages', 'conf.' => array('pages' => '< lib.bar')),
+			),
+			'empty record with empty path' => array(
+				array('record' => '', 'path' => ''),
+				array('source' => 'pages_42', 'tables' => 'pages'),
+			),
+			'empty record' => array(
+				array('record' => ''),
+				array('source' => 'pages_42', 'tables' => 'pages'),
+			),
+			'empty path' => array(
+				array('path' => ''),
+				array('source' => 'pages_42', 'tables' => 'pages'),
 			),
 		);
 	}
@@ -84,6 +108,12 @@ class RecordRendererTest extends UnitTestCase {
 		$tsfeMock = $this->getMock('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', array(), array(), '', FALSE);
 		$tsfeMock->id = 42;
 		$contextFixture = new RenderingContext($tsfeMock);
+		$requestFixture = new Request($requestArguments);
+
+		// This tests if the provided data makes sense
+		$this->assertTrue($this->renderer->canRender($requestFixture));
+
+		// Actual test
 		$this->assertSame(
 			$expectedConfiguration,
 			$this->renderer->_call('resolveRenderingConfiguration', new Request($requestArguments), $contextFixture)
