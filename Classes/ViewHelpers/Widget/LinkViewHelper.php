@@ -93,7 +93,7 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
 		$additionalParams['tx_typoscriptrendering']['context'] = json_encode($ajaxContext);
 
 		$uriBuilder = $this->controllerContext->getUriBuilder();
-		$argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
+		$argumentPrefix = $uriBuilder->getArgumentPrefix();
 
 		$uriBuilder->reset()
 			->setArguments(array_merge(array($argumentPrefix => $arguments), $additionalParams))
@@ -118,7 +118,7 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
 	 */
 	protected function getWidgetUri() {
 		$uriBuilder = $this->controllerContext->getUriBuilder();
-		$argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
+		$argumentPrefix = $uriBuilder->getArgumentPrefix();
 		$arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : array();
 		if ($this->hasArgument('action')) {
 			$arguments['action'] = $this->arguments['action'];
