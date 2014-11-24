@@ -14,13 +14,16 @@ namespace Helhum\TyposcriptRendering\ViewHelpers\Uri;
  * Public License for more details.                                       *
  *                                                                        */
 
+use Helhum\TyposcriptRendering\Configuration\RecordRenderingConfigurationBuilder;
+use Helhum\TyposcriptRendering\Renderer\RenderingContext;
+
 /**
  * A view helper for creating "Ajax" URIs to extbase actions.
  *
  * = Examples =
  *
  * <code title="URI to the show-action of the current controller">
- * <h:uri.action action="show" />
+ * <h:uri.ajaxAction action="show" />
  * </code>
  * <output>
  * index.php?id=123&tx_typoscriptrendering[context]={"record":"tt_content_123","path":"tt_content.list.20.myextension_plugin"}&tx_myextension_plugin[action]=show&tx_myextension_plugin[controller]=Standard&cHash=xyz
@@ -34,12 +37,6 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
 	 * @inject
 	 */
 	protected $configurationManager;
-
-	/**
-	 * @var \TYPO3\CMS\Extbase\Service\ExtensionService
-	 * @inject
-	 */
-	protected $extensionService;
 
 	/**
 	 * @param string $action Target action
@@ -56,22 +53,21 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
 	 * @param boolean $addQueryString If set, the current query parameters will be kept in the URI
 	 * @param array $argumentsToBeExcludedFromQueryString arguments to be removed from the URI. Only active if $addQueryString = TRUE
 	 * @param string $addQueryStringMethod Set which parameters will be kept. Only active if $addQueryString = TRUE
+	 * @param string $contextRecord The record that the rendering should depend upon. e.g. current (default: record is fetched from current Extbase plugin), tt_content:12 (tt_content record with uid 12), pages:15 (pages record with uid 15), 'currentPage' record of current page
 	 * @return string Rendered link
 	 */
-	public function render($action = NULL, array $arguments = array(), $controller = NULL, $extensionName = NULL, $pluginName = NULL, $pageUid = NULL, $section = '', $format = '', $linkAccessRestrictedPages = FALSE, array $additionalParams = array(), $absolute = FALSE, $addQueryString = FALSE, array $argumentsToBeExcludedFromQueryString = array(), $addQueryStringMethod = NULL) {
-		list($table, $uid) = explode(':', $this->configurationManager->getContentObject()->currentRecord);
+	public function render($action = NULL, array $arguments = array(), $controller = NULL, $extensionName = NULL, $pluginName = NULL, $pageUid = NULL, $section = '', $format = '', $linkAccessRestrictedPages = FALSE, array $additionalParams = array(), $absolute = FALSE, $addQueryString = FALSE, array $argumentsToBeExcludedFromQueryString = array(), $addQueryStringMethod = NULL, $contextRecord = 'current') {
+		if ($contextRecord === 'current') {
+			$contextRecord = $this->configurationManager->getContentObject()->currentRecord;
+		}
 		if ($pluginName === NULL) {
 			$pluginName = $this->controllerContext->getRequest()->getPluginName();
 		}
 		if ($extensionName === NULL) {
 			$extensionName = $this->controllerContext->getRequest()->getControllerExtensionName();
 		}
-		$pluginNamespace = $this->extensionService->getPluginNamespace($extensionName, $pluginName);
-		$ajaxContext = array(
-			'record' => $table . '_' . $uid,
-			'path' => 'tt_content.list.20.' . str_replace('tx_', '', $pluginNamespace)
-		);
-		$additionalParams['tx_typoscriptrendering']['context'] = json_encode($ajaxContext);
+		$renderingConfiguration = $this->buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord);
+		$additionalParams['tx_typoscriptrendering']['context'] = json_encode($renderingConfiguration);
 
 		$uriBuilder = $this->controllerContext->getUriBuilder();
 		$uriBuilder->reset()
@@ -87,9 +83,20 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
 
 		// TYPO3 6.0 compatibility check:
 		if (method_exists($uriBuilder, 'setAddQueryStringMethod')) {
-			$uriBuilder->setAddQueryStringMethod($this->arguments['addQueryStringMethod']);
+			$uriBuilder->setAddQueryStringMethod($addQueryStringMethod);
 		}
 
 		return $uriBuilder->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
+	}
+
+	/**
+	 * @param string $extensionName
+	 * @param string $pluginName
+	 * @param string $contextRecord
+	 * @return array
+	 */
+	public function buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord) {
+		$configurationBuilder = new RecordRenderingConfigurationBuilder(new RenderingContext($GLOBALS['TSFE']));
+		return $configurationBuilder->configurationFor($extensionName, $pluginName, $contextRecord);
 	}
 }
