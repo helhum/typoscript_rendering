@@ -71,6 +71,8 @@ class RenderingDispatcher {
 		// Do not do anything in this hook, if there are no parameters
 		if ($typoScriptFrontendController->isGeneratePage() && GeneralUtility::_GET($this->argumentNamespace)) {
 			$this->ensureRequiredEnvironment();
+			// For rendering we must ensure that the frontend controller has a cObj set
+			$typoScriptFrontendController->newCObj();
 			$request = $this->requestBuilder->build(GeneralUtility::_GET($this->argumentNamespace));
 			$response = new Response();
 
