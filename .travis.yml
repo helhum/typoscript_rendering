@@ -25,7 +25,7 @@ before_script:
   - sudo apt-get install parallel
   - composer self-update
   - cd ..
-  - composer create-project typo3/cms-base-distribution=$TYPO3_VERSION typo3_core
+  - composer create-project --stability dev typo3/cms-base-distribution=$TYPO3_VERSION typo3_core
   - mv typo3_core/* .
   - composer install
   - mkdir -p typo3conf/ext
