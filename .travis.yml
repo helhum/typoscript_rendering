@@ -9,13 +9,13 @@ php:
 matrix:
   exclude:
     - php: 5.3
-      env: TYPO3_VERSION=dev-master
+      env: TYPO3_BRANCH=master
     - php: 5.4
-      env: TYPO3_VERSION=dev-master
+      env: TYPO3_BRANCH=master
 
 env:
-  - TYPO3_VERSION=dev-master
-  - TYPO3_VERSION=6.2.*@dev
+  - TYPO3_BRANCH=master
+  - TYPO3_BRANCH=TYPO3_6-2
 
 notifications:
   email:
@@ -25,9 +25,10 @@ before_script:
   - sudo apt-get install parallel
   - composer self-update
   - cd ..
-  - composer create-project --no-interaction typo3/cms-base-distribution=$TYPO3_VERSION typo3_core
+  - git clone --single-branch --branch $TYPO3_BRANCH --depth 1 https://github.com/TYPO3/TYPO3.CMS.git typo3_core
   - mv typo3_core/* .
-  - mkdir -p typo3conf/ext/
+  - composer install
+  - mkdir -p typo3conf/ext
   - mv typoscript_rendering typo3conf/ext/
 
 script:
