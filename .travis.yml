@@ -15,7 +15,7 @@ matrix:
 
 env:
   - TYPO3_VERSION=dev-master
-  - TYPO3_VERSION=~6.2.6
+  - TYPO3_VERSION=6.2.*@dev
 
 notifications:
   email:
@@ -25,8 +25,9 @@ before_script:
   - sudo apt-get install parallel
   - composer self-update
   - cd ..
-  - composer create-project --no-interaction helhum/typo3-cms-console-distribution=$TYPO3_VERSION typo3_core
+  - composer create-project --no-interaction typo3/cms-base-distribution=$TYPO3_VERSION typo3_core
   - mv typo3_core/* .
+  - mkdir -p typo3conf/ext/
   - mv typoscript_rendering typo3conf/ext/
 
 script:
