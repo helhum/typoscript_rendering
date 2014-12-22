@@ -59,7 +59,7 @@ class RenderingDispatcher {
 	 * @param RequestBuilder $requestBuilder
 	 * @param array $renderer
 	 */
-	public function __construct(RequestBuilder $requestBuilder = NULL, $renderer = array()) {
+	public function __construct(RequestBuilder $requestBuilder = NULL, array $renderer = NULL) {
 		$this->requestBuilder = $requestBuilder ?: new RequestBuilder();
 		$this->renderer = $renderer ?: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['typoscript_rendering']['renderClasses'];
 	}
