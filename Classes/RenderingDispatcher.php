@@ -27,6 +27,7 @@ namespace Helhum\TyposcriptRendering;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Helhum\TyposcriptRendering\Core\FrontendRenderingProvisioner;
 use Helhum\TyposcriptRendering\Mvc\Request;
 use Helhum\TyposcriptRendering\Mvc\RequestBuilder;
 use Helhum\TyposcriptRendering\Mvc\Response;
@@ -71,8 +72,10 @@ class RenderingDispatcher {
 		// Do not do anything in this hook, if there are no parameters
 		if ($typoScriptFrontendController->isGeneratePage() && GeneralUtility::_GET($this->argumentNamespace)) {
 			$this->ensureRequiredEnvironment();
-			// For rendering we must ensure that the frontend controller has a cObj set
-			$typoScriptFrontendController->newCObj();
+
+			$frontendRenderingProvisioner = new FrontendRenderingProvisioner();
+			$frontendRenderingProvisioner->provision($typoScriptFrontendController);
+
 			$request = $this->requestBuilder->build(GeneralUtility::_GET($this->argumentNamespace));
 			$response = new Response();
 
