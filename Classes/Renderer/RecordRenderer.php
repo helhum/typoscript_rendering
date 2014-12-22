@@ -65,6 +65,8 @@ class RecordRenderer implements RenderingInterface {
 	 * @return array
 	 */
 	protected function resolveRenderingConfiguration(Request $request, RenderingContext $renderingContext) {
+		$configuration = array();
+
 		if ($request->hasArgument('path')) {
 			$renderingPath = $request->getArgument('path');
 		}
@@ -82,13 +84,15 @@ class RecordRenderer implements RenderingInterface {
 		if (empty($table) && empty($id)) {
 			$table = 'pages';
 			$id = $renderingContext->getFrontendController()->id;
+			if (!empty($id) && $renderingContext->getFrontendController()->page['pid'] === '0') {
+				// Allow rendering of a root page which has pid === 0 and will be denied otherwise
+				$configuration['dontCheckPid'] = '1';
+			}
 		}
 
 		if (!empty($id) && empty($table)) {
 			$table = 'tt_content';
 		}
-
-		$configuration = array();
 
 		$configuration['source'] = $table . '_' . $id;
 		$configuration['tables'] = $table;
