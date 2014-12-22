@@ -95,18 +95,25 @@ class RecordRendererTest extends UnitTestCase {
 				array('path' => ''),
 				array('source' => 'pages_42', 'tables' => 'pages'),
 			),
+			'root page' => array(
+				array('path' => ''),
+				array('dontCheckPid' => '1', 'source' => 'pages_42', 'tables' => 'pages'),
+				'0'
+			),
 		);
 	}
 
 	/**
 	 * @param array $requestArguments
 	 * @param array $expectedConfiguration
+	 * @param string $pid
 	 * @test
 	 * @dataProvider configurationDataProvider
 	 */
-	public function configurationIsGeneratedCorrectlyFromRequest(array $requestArguments, array $expectedConfiguration) {
+	public function configurationIsGeneratedCorrectlyFromRequest(array $requestArguments, array $expectedConfiguration, $pid = '42') {
 		$tsfeMock = $this->getMock('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', array(), array(), '', FALSE);
 		$tsfeMock->id = 42;
+		$tsfeMock->page = array('pid' => $pid);
 		$contextFixture = new RenderingContext($tsfeMock);
 		$requestFixture = new Request($requestArguments);
 
