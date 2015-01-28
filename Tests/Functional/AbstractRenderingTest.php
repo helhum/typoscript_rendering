@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Class RenderingTest
  */
-class AbstractRenderingTest extends FunctionalTestCase {
+abstract class AbstractRenderingTest extends FunctionalTestCase {
 
 	/**
 	 * @var array
