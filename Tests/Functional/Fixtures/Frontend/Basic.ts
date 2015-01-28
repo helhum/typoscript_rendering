@@ -35,7 +35,7 @@ page {
 	10 = TEXT
 	10.typolink {
 		parameter = 1
-		additionalParams.wrap = &tx_typoscriptrendering[context]={"path": "|"}
+		additionalParams.wrap = &tx_typoscriptrendering[context]={"record":"pages_1","path": "|"}
 		additionalParams.data = GP:path
 		useCacheHash = 1
 		returnLast = url

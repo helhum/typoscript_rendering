@@ -84,14 +84,22 @@ class RecordRenderer implements RenderingInterface {
 		if (empty($table) && empty($id)) {
 			$table = 'pages';
 			$id = $renderingContext->getFrontendController()->id;
-			if (!empty($id) && $renderingContext->getFrontendController()->page['pid'] === '0') {
-				// Allow rendering of a root page which has pid === 0 and will be denied otherwise
-				$configuration['dontCheckPid'] = '1';
-			}
 		}
 
 		if (!empty($id) && empty($table)) {
 			$table = 'tt_content';
+		}
+
+		if ($table === 'pages') {
+			// Allow rendering of a root page which has pid === 0 and would be denied otherwise
+			$rootLine = $renderingContext->getFrontendController()->sys_page->getRootLine($id);
+			// $rootLine[0] is the root page. Check if the page we're going to render is a root page.
+			// We explicitly ignore the case where the to be rendered id is in another root line (multi domain setup)
+			// as this would require an additional record lookup. The use case for this is very limited anyway
+			// and should be implemented in a different renderer instead of covering that here.
+			if ($rootLine[0]['uid'] === (string)$id) {
+				$configuration['dontCheckPid'] = '1';
+			}
 		}
 
 		$configuration['source'] = $table . '_' . $id;

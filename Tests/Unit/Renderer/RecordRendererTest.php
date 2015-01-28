@@ -97,8 +97,8 @@ class RecordRendererTest extends UnitTestCase {
 			),
 			'root page' => array(
 				array('path' => ''),
-				array('dontCheckPid' => '1', 'source' => 'pages_42', 'tables' => 'pages'),
-				'0'
+				array('dontCheckPid' => '1', 'source' => 'pages_1', 'tables' => 'pages'),
+				'1'
 			),
 		);
 	}
@@ -106,14 +106,23 @@ class RecordRendererTest extends UnitTestCase {
 	/**
 	 * @param array $requestArguments
 	 * @param array $expectedConfiguration
-	 * @param string $pid
+	 * @param string $pageId
 	 * @test
 	 * @dataProvider configurationDataProvider
 	 */
-	public function configurationIsGeneratedCorrectlyFromRequest(array $requestArguments, array $expectedConfiguration, $pid = '42') {
+	public function configurationIsGeneratedCorrectlyFromRequest(array $requestArguments, array $expectedConfiguration, $pageId = '42') {
 		$tsfeMock = $this->getMock('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', array(), array(), '', FALSE);
-		$tsfeMock->id = 42;
-		$tsfeMock->page = array('pid' => $pid);
+		$pageRepositoryMock = $this->getMock('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+		$pageRepositoryMock->expects($this->any())->method('getRootLine')->willReturn(
+				array(
+					array(
+						'uid' => '1',
+						'pid' => '0',
+					)
+				)
+		);
+		$tsfeMock->id = $pageId;
+		$tsfeMock->sys_page = $pageRepositoryMock;
 		$contextFixture = new RenderingContext($tsfeMock);
 		$requestFixture = new Request($requestArguments);
 
