@@ -30,12 +30,12 @@ use TYPO3\CMS\Core\Tests\Functional\Framework\Frontend\Response;
 use TYPO3\CMS\Core\Tests\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-require_once __DIR__ . '/AbstractRenderingTest.php';
+require_once __DIR__ . '/AbstractRenderingTestCase.php';
 
 /**
  * Class RenderingTest
  */
-class RenderingTest extends AbstractRenderingTest {
+class RenderingTest extends AbstractRenderingTestCase {
 
 	/**
 	 * @test
