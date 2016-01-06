@@ -80,7 +80,7 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 		$additionalParams['tx_typoscriptrendering']['context'] = json_encode($ajaxContext);
 
 		$uriBuilder = $this->controllerContext->getUriBuilder();
-		$argumentPrefix = $uriBuilder->getArgumentPrefix();
+		$argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
 
 		$uriBuilder->reset()
 			->setArguments(array_merge(array($argumentPrefix => $arguments), $additionalParams))
@@ -105,7 +105,7 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper 
 	 */
 	protected function getWidgetUri() {
 		$uriBuilder = $this->controllerContext->getUriBuilder();
-		$argumentPrefix = $uriBuilder->getArgumentPrefix();
+		$argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
 		$arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : array();
 		if ($this->hasArgument('action')) {
 			$arguments['action'] = $this->arguments['action'];
