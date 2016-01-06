@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Unit\Renderer;
+namespace Helhum\TyposcriptRendering\Tests\Unit\Renderer;
 
 /***************************************************************
  *  Copyright notice
