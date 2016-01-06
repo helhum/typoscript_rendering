@@ -10,12 +10,17 @@ matrix:
   exclude:
     - php: 5.3
       env: TYPO3_BRANCH=master
+    - php: 5.3
+      env: TYPO3_BRANCH=TYPO3_7-6
     - php: 5.4
       env: TYPO3_BRANCH=master
+    - php: 5.4
+      env: TYPO3_BRANCH=TYPO3_7-6
 
 env:
   - TYPO3_BRANCH=master
   - TYPO3_BRANCH=TYPO3_6-2
+  - TYPO3_BRANCH=TYPO3_7-6
 
 notifications:
   email:
