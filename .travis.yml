@@ -26,6 +26,11 @@ notifications:
   email:
     - helmut@typo3.org
 
+sudo: false
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 addons:
   apt:
     packages:
