@@ -27,7 +27,6 @@ namespace Helhum\TyposcriptRendering\Core;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -104,6 +103,7 @@ class FrontendRenderingProvisioner {
 	 * @param TypoScriptFrontendController $typoScriptFrontendController
 	 */
 	protected function configurePageRenderer(TypoScriptFrontendController $typoScriptFrontendController) {
+		$pageRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Page\\PageRenderer');
 		// Setting XHTML-doctype from doctype
 		if (!$typoScriptFrontendController->config['config']['xhtmlDoctype']) {
 			$typoScriptFrontendController->config['config']['xhtmlDoctype'] = $typoScriptFrontendController->config['config']['doctype'];
@@ -128,12 +128,12 @@ class FrontendRenderingProvisioner {
 					$typoScriptFrontendController->xhtmlVersion = 200;
 					break;
 				default:
-					$typoScriptFrontendController->getPageRenderer()->setRenderXhtml(FALSE);
+					$pageRenderer->setRenderXhtml(FALSE);
 					$typoScriptFrontendController->xhtmlDoctype = '';
 					$typoScriptFrontendController->xhtmlVersion = 0;
 			}
 		} else {
-			$typoScriptFrontendController->getPageRenderer()->setRenderXhtml(FALSE);
+			$pageRenderer->setRenderXhtml(FALSE);
 		}
 	}
 
