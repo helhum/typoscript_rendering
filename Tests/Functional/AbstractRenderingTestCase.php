@@ -94,8 +94,13 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
             $requestUrl = '/?' . GeneralUtility::implodeArrayForUrl('', $requestArguments);
         }
 
+        if (property_exists($this, 'instancePath')) {
+            $instancePath = $this->instancePath;
+        } else {
+            $instancePath = ORIGINAL_ROOT . 'typo3temp/functional-' . substr(sha1(get_class($this)), 0, 7);
+        }
         $arguments = array(
-            'documentRoot' => ORIGINAL_ROOT . 'typo3temp/functional-' . substr(sha1(get_class($this)), 0, 7),
+            'documentRoot' => $instancePath,
             'requestUrl' => 'http://localhost' . $requestUrl,
         );
 
