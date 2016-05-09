@@ -57,14 +57,21 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
 	 * @return string Rendered link
 	 */
 	public function render($action = NULL, array $arguments = array(), $controller = NULL, $extensionName = NULL, $pluginName = NULL, $pageUid = NULL, $section = '', $format = '', $linkAccessRestrictedPages = FALSE, array $additionalParams = array(), $absolute = FALSE, $addQueryString = FALSE, array $argumentsToBeExcludedFromQueryString = array(), $addQueryStringMethod = NULL, $contextRecord = 'current') {
-		if ($contextRecord === 'current') {
-			$contextRecord = $this->configurationManager->getContentObject()->currentRecord;
-		}
 		if ($pluginName === NULL) {
 			$pluginName = $this->controllerContext->getRequest()->getPluginName();
 		}
 		if ($extensionName === NULL) {
 			$extensionName = $this->controllerContext->getRequest()->getControllerExtensionName();
+		}
+		if ($contextRecord === 'current') {
+			if (
+				$pluginName !== $this->controllerContext->getRequest()->getPluginName()
+				|| $extensionName !== $this->controllerContext->getRequest()->getControllerExtensionName()
+			) {
+				$contextRecord = 'currentPage';
+			} else {
+				$contextRecord = $this->configurationManager->getContentObject()->currentRecord;
+			}
 		}
 		$renderingConfiguration = $this->buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord);
 		$additionalParams['tx_typoscriptrendering']['context'] = json_encode($renderingConfiguration);
