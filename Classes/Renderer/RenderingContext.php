@@ -32,21 +32,23 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 /**
  * Class RenderingContext
  */
-class RenderingContext {
+class RenderingContext
+{
+    /**
+     * @var TypoScriptFrontendController
+     */
+    protected $frontendController;
 
-	/**
-	 * @var TypoScriptFrontendController
-	 */
-	protected $frontendController;
+    public function __construct(TypoScriptFrontendController $frontendController)
+    {
+        $this->frontendController = $frontendController;
+    }
 
-	function __construct(TypoScriptFrontendController $frontendController) {
-		$this->frontendController = $frontendController;
-	}
-
-	/**
-	 * @return TypoScriptFrontendController
-	 */
-	public function getFrontendController() {
-		return $this->frontendController;
-	}
+    /**
+     * @return TypoScriptFrontendController
+     */
+    public function getFrontendController()
+    {
+        return $this->frontendController;
+    }
 }

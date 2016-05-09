@@ -30,6 +30,6 @@ namespace Helhum\TyposcriptRendering;
 /**
  * Class Exception
  */
-class Exception extends \TYPO3\CMS\Core\Error\Exception {
-
-} 
+class Exception extends \TYPO3\CMS\Core\Error\Exception
+{
+}

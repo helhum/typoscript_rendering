@@ -33,24 +33,24 @@ use Helhum\TyposcriptRendering\Mvc\Response;
 /**
  * Interface RenderingInterface
  */
-interface RenderingInterface {
+interface RenderingInterface
+{
+    /**
+     * Evaluates request arguments, renders a string based on them
+     * and sets the string content to the response.
+     *
+     * @param Request $request
+     * @param Response $response
+     * @param RenderingContext $renderingContext
+     * @return void
+     */
+    public function renderRequest(Request $request, Response $response, RenderingContext $renderingContext);
 
-	/**
-	 * Evaluates request arguments, renders a string based on them
-	 * and sets the string content to the response.
-	 *
-	 * @param Request $request
-	 * @param Response $response
-	 * @param RenderingContext $renderingContext
-	 * @return void
-	 */
-	public function renderRequest(Request $request, Response $response, RenderingContext $renderingContext);
-
-	/**
-	 * Whether the required arguments for rendering are present or not
-	 *
-	 * @param Request $request
-	 * @return bool
-	 */
-	public function canRender(Request $request);
-} 
+    /**
+     * Whether the required arguments for rendering are present or not
+     *
+     * @param Request $request
+     * @return bool
+     */
+    public function canRender(Request $request);
+}

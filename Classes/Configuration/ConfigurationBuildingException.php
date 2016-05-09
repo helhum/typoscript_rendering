@@ -30,6 +30,6 @@ namespace Helhum\TyposcriptRendering\Configuration;
 /**
  * Class ConfigurationBuildingException
  */
-class ConfigurationBuildingException extends \Exception {
-
-} 
+class ConfigurationBuildingException extends \Exception
+{
+}

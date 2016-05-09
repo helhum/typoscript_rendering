@@ -30,24 +30,26 @@ namespace Helhum\TyposcriptRendering\Mvc;
 /**
  * Class Response
  */
-class Response {
+class Response
+{
+    /**
+     * @var string
+     */
+    protected $content;
 
-	/**
-	 * @var string
-	 */
-	protected $content;
+    /**
+     * @param string $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
 
-	/**
-	 * @param string $content
-	 */
-	public function setContent($content) {
-		$this->content = $content;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getContent() {
-		return $this->content;
-	}
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
 }

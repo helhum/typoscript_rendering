@@ -27,43 +27,44 @@ namespace Helhum\TyposcriptRendering\Mvc;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
-
 /**
  * Class Request
  */
-class Request {
+class Request
+{
+    /**
+     * @var array
+     */
+    protected $arguments = array();
 
-	/**
-	 * @var array
-	 */
-	protected $arguments = array();
+    /**
+     * @param array $arguments
+     */
+    public function __construct(array $arguments)
+    {
+        $this->arguments = $arguments;
+    }
 
-	/**
-	 * @param array $arguments
-	 */
-	public function __construct(array $arguments) {
-		$this->arguments = $arguments;
-	}
+    /**
+     * @param string $argumentName
+     * @return bool
+     */
+    public function hasArgument($argumentName)
+    {
+        return isset($this->arguments[$argumentName]);
+    }
 
-	/**
-	 * @param string $argumentName
-	 * @return bool
-	 */
-	public function hasArgument($argumentName) {
-		return isset($this->arguments[$argumentName]);
-	}
+    /**
+     * @param string $argumentName
+     * @return mixed
+     * @throws \InvalidArgumentException
+     */
+    public function getArgument($argumentName)
+    {
+        if (!isset($this->arguments[$argumentName])) {
+            throw new \InvalidArgumentException('No argument found with name: ' . $argumentName, 1403562449);
+        }
 
-	/**
-	 * @param string $argumentName
-	 * @return mixed
-	 * @throws \InvalidArgumentException
-	 */
-	public function getArgument($argumentName) {
-		if (!isset($this->arguments[$argumentName])) {
-			throw new \InvalidArgumentException('No argument found with name: ' . $argumentName, 1403562449);
-		}
-
-		return $this->arguments[$argumentName];
-	}
-} 
+        return $this->arguments[$argumentName];
+    }
+}

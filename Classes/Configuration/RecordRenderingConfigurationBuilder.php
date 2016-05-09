@@ -33,81 +33,84 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * Class RecordRenderingConfigurationBuilder
  */
-class RecordRenderingConfigurationBuilder {
+class RecordRenderingConfigurationBuilder
+{
+    /**
+     * @var RenderingContext
+     */
+    protected $renderingContext;
 
-	/**
-	 * @var RenderingContext
-	 */
-	protected $renderingContext;
+    /**
+     * @param RenderingContext $renderingContext
+     */
+    public function __construct(RenderingContext $renderingContext)
+    {
+        $this->renderingContext = $renderingContext;
+    }
 
-	/**
-	 * @param RenderingContext $renderingContext
-	 */
-	public function __construct(RenderingContext $renderingContext) {
-		$this->renderingContext = $renderingContext;
-	}
+    /**
+     * @param string $extensionName
+     * @param string $pluginName
+     * @param string $contextRecord
+     * @return array
+     */
+    public function configurationFor($extensionName, $pluginName, $contextRecord = 'currentPage')
+    {
+        list($tableName, $uid) = $this->resolveTableNameAndUidFromContextString($contextRecord);
+        $pluginSignature = $this->buildPluginSignature($extensionName, $pluginName);
 
-	/**
-	 * @param string $extensionName
-	 * @param string $pluginName
-	 * @param string $contextRecord
-	 * @return array
-	 */
-	public function configurationFor($extensionName, $pluginName, $contextRecord = 'currentPage') {
-		list($tableName, $uid) = $this->resolveTableNameAndUidFromContextString($contextRecord);
-		$pluginSignature = $this->buildPluginSignature($extensionName, $pluginName);
+        return array(
+            'record' => $tableName . '_' . $uid,
+            'path' => 'tt_content.list.20.' . $pluginSignature
+        );
+    }
 
-		return array(
-			'record' => $tableName . '_' . $uid,
-			'path' => 'tt_content.list.20.' . $pluginSignature
-		);
-	}
+    /**
+     * Resolves the table name and uid for the record the rendering is based upon.
+     * Falls back to current page if none is available
+     *
+     * @param $contextRecord
+     * @return array table name as first and uid as second index of the array
+     *
+     * @throws ConfigurationBuildingException
+     */
+    protected function resolveTableNameAndUidFromContextString($contextRecord)
+    {
+        if (!is_string($contextRecord)) {
+            throw new ConfigurationBuildingException(sprintf('Context record must be of type string "%s" given.', gettype($contextRecord)), 1416846201);
+        }
 
-	/**
-	 * Resolves the table name and uid for the record the rendering is based upon.
-	 * Falls back to current page if none is available
-	 *
-	 * @param $contextRecord
-	 * @return array table name as first and uid as second index of the array
-	 *
-	 * @throws ConfigurationBuildingException
-	 */
-	protected function resolveTableNameAndUidFromContextString($contextRecord) {
-		if (!is_string($contextRecord)) {
-			throw new ConfigurationBuildingException(sprintf('Context record must be of type string "%s" given.', gettype($contextRecord)), 1416846201);
-		}
+        if ($contextRecord === 'currentPage') {
+            $tableNameAndUid = array('pages', $this->renderingContext->getFrontendController()->id);
+        } else {
+            $tableNameAndUid = explode(':', $contextRecord);
+            if (count($tableNameAndUid) !== 2 || empty($tableNameAndUid[0]) || empty($tableNameAndUid[1]) || !MathUtility::canBeInterpretedAsInteger($tableNameAndUid[1])) {
+                $tableNameAndUid = array('pages', $this->renderingContext->getFrontendController()->id);
+            }
+        }
 
-		if ($contextRecord === 'currentPage') {
-			$tableNameAndUid = array('pages', $this->renderingContext->getFrontendController()->id);
-		} else {
-			$tableNameAndUid = explode(':', $contextRecord);
-			if (count($tableNameAndUid) !== 2 || empty($tableNameAndUid[0]) || empty($tableNameAndUid[1]) || !MathUtility::canBeInterpretedAsInteger($tableNameAndUid[1])) {
-				$tableNameAndUid = array('pages', $this->renderingContext->getFrontendController()->id);
-			}
-		}
+        // TODO: maybe check if the record is available
 
-		// TODO: maybe check if the record is available
+        return $tableNameAndUid;
+    }
 
-		return $tableNameAndUid;
-	}
+    /**
+     * Builds the plugin signature for the tt_content rendering
+     *
+     * @param string $extensionName
+     * @param string $pluginName
+     * @return string
+     * @see \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin()
+     */
+    protected function buildPluginSignature($extensionName, $pluginName)
+    {
+        // Check if vendor name is prepended to extensionName in the format {vendorName}.{extensionName}
+        $delimiterPosition = strrpos($extensionName, '.');
+        if ($delimiterPosition !== false) {
+            $extensionName = substr($extensionName, $delimiterPosition + 1);
+        }
+        $extensionName = str_replace(' ', '', ucwords(str_replace('_', ' ', $extensionName)));
 
-	/**
-	 * Builds the plugin signature for the tt_content rendering
-	 *
-	 * @param string $extensionName
-	 * @param string $pluginName
-	 * @return string
-	 * @see \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin()
-	 */
-	protected function buildPluginSignature($extensionName, $pluginName) {
-		// Check if vendor name is prepended to extensionName in the format {vendorName}.{extensionName}
-		$delimiterPosition = strrpos($extensionName, '.');
-		if ($delimiterPosition !== FALSE) {
-			$extensionName = substr($extensionName, $delimiterPosition + 1);
-		}
-		$extensionName = str_replace(' ', '', ucwords(str_replace('_', ' ', $extensionName)));
-
-		return strtolower($extensionName . '_' . $pluginName);
-	}
-
-} 
+        return strtolower($extensionName . '_' . $pluginName);
+    }
+}
