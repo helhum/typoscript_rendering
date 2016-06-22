@@ -61,8 +61,10 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
      * @param array $arguments Arguments
      * @param string $section The anchor to be added to the URI
      * @param string $format The requested format, e.g. ".html
-     * @param bool $ajax TRUE if the URI should be to an AJAX widget, FALSE otherwise.
+     * @param bool $ajax true if the URI should be to an Ajax widget, false otherwise.
+     *
      * @return string The rendered link
+     *
      * @api
      */
     public function render($pluginName, $extensionName, $action = null, $arguments = array(), $section = '', $format = '', $ajax = true)
@@ -78,9 +80,9 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
     }
 
     /**
-     * Get the URI for an AJAX Request.
+     * Gets the URI for an Ajax Request.
      *
-     * @return string the AJAX URI
+     * @return string the Ajax URI
      */
     protected function getAjaxUri()
     {
@@ -115,7 +117,7 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
     }
 
     /**
-     * Get the URI for a non-AJAX Request.
+     * Gets the URI for a non-Ajax Request.
      *
      * @return string the Widget URI
      */
