@@ -32,17 +32,21 @@ use Helhum\TyposcriptRendering\Exception;
 class RequestBuilder
 {
     /**
-     * @param array $rawRequestArgument
+     * @param mixed $rawRequestArgument
      *
      * @return Request
      *
      * @throws \Helhum\TyposcriptRendering\Exception
      */
-    public function build(array $rawRequestArgument)
+    public function build($rawRequestArgument)
     {
         if (empty($rawRequestArgument['context']) || !is_string($rawRequestArgument['context'])) {
             throw new Exception('tx_typoscriptrendering|context must not be empty and must be of type string!', 1403793452);
         }
-        return new Request(json_decode($rawRequestArgument['context'], true));
+        $rawRequest = @json_decode($rawRequestArgument['context'], true);
+        if (null === $rawRequest) {
+            throw new Exception('tx_typoscriptrendering|context must contain a valid json string!', 1466679262);
+        }
+        return new Request($rawRequest);
     }
 }
