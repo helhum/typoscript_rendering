@@ -2,10 +2,6 @@ language: php
 
 matrix:
   include:
-    - php: 5.3
-      env: TYPO3_BRANCH=TYPO3_6-2
-    - php: 5.4
-      env: TYPO3_BRANCH=TYPO3_6-2
     - php: 5.5
       env: TYPO3_BRANCH=TYPO3_6-2
     - php: 5.6
