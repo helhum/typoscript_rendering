@@ -31,17 +31,17 @@ use TYPO3\CMS\Core\Tests\FunctionalTestCase;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Class RenderingTest
+ * Test case.
  */
 abstract class AbstractRenderingTestCase extends FunctionalTestCase
 {
     /**
-     * @var array
+     * @var string[]
      */
     protected $testExtensionsToLoad = array('typo3conf/ext/typoscript_rendering');
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $coreExtensionsToLoad = array('fluid');
 
@@ -59,6 +59,7 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
      * @param int $pageId
      * @param int $languageId
      * @param string $path
+     *
      * @return string
      */
     protected function getRenderUrl($pageId, $languageId, $path)
@@ -70,6 +71,8 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
     /**
      * @param int $pageId
      * @param array $typoScriptFiles
+     *
+     * @return void
      */
     protected function setUpFrontendRootPage($pageId, array $typoScriptFiles = array())
     {
@@ -84,6 +87,7 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
     /**
      * @param array $requestArguments
      * @param bool $failOnFailure
+     *
      * @return Response
      */
     protected function fetchFrontendResponse(array $requestArguments, $failOnFailure = true)

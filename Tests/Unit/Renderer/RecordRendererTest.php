@@ -31,9 +31,10 @@ use Helhum\TyposcriptRendering\Mvc\Request;
 use Helhum\TyposcriptRendering\Renderer\RecordRenderer;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
- * Class RecordRendererTest
+ * Test case.
  */
 class RecordRendererTest extends UnitTestCase
 {
@@ -107,13 +108,14 @@ class RecordRendererTest extends UnitTestCase
 
     /**
      * @param array $requestArguments
-     * @param array $expectedConfiguration
+     * @param string[] $expectedConfiguration
      * @param string $pageId
      * @test
      * @dataProvider configurationDataProvider
      */
     public function configurationIsGeneratedCorrectlyFromRequest(array $requestArguments, array $expectedConfiguration, $pageId = '42')
     {
+        /** @var TypoScriptFrontendController|\PHPUnit_Framework_MockObject_MockObject $tsfeMock */
         $tsfeMock = $this->getMock('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', array(), array(), '', false);
         $pageRepositoryMock = $this->getMock('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
         $pageRepositoryMock->expects($this->any())->method('getRootLine')->willReturn(

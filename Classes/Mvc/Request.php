@@ -47,6 +47,7 @@ class Request
 
     /**
      * @param string $argumentName
+     *
      * @return bool
      */
     public function hasArgument($argumentName)
@@ -56,7 +57,9 @@ class Request
 
     /**
      * @param string $argumentName
+     *
      * @return mixed
+     *
      * @throws \InvalidArgumentException
      */
     public function getArgument($argumentName)

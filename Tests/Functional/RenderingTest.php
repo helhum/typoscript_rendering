@@ -30,7 +30,7 @@ namespace Helhum\TyposcriptRendering\Tests\Functional;
 require_once __DIR__ . '/AbstractRenderingTestCase.php';
 
 /**
- * Class RenderingTest
+ * Test case.
  */
 class RenderingTest extends AbstractRenderingTestCase
 {

@@ -52,13 +52,14 @@ class RenderingDispatcher
     protected $requestBuilder;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $renderer = array();
 
     /**
      * @param RequestBuilder $requestBuilder
-     * @param array $renderer
+     *
+     * @param string[] $renderer
      */
     public function __construct(RequestBuilder $requestBuilder = null, array $renderer = null)
     {
@@ -68,6 +69,8 @@ class RenderingDispatcher
 
     /**
      * @param TypoScriptFrontendController $typoScriptFrontendController
+     *
+     * @return void
      */
     public function checkDataSubmission(TypoScriptFrontendController $typoScriptFrontendController)
     {
@@ -91,6 +94,8 @@ class RenderingDispatcher
     }
 
     /**
+     * @return void
+     *
      * @throws Exception
      */
     protected function ensureRequiredEnvironment()
@@ -108,7 +113,9 @@ class RenderingDispatcher
 
     /**
      * @param Request $request
+     *
      * @return RenderingInterface
+     *
      * @throws Exception
      */
     protected function resolveRenderer(Request $request)

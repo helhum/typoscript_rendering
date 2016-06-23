@@ -41,6 +41,7 @@ class RecordRenderer implements RenderingInterface
      * @param Request $request
      * @param Response $response
      * @param RenderingContext $renderingContext
+     *
      * @return void
      */
     public function renderRequest(Request $request, Response $response, RenderingContext $renderingContext)
@@ -54,6 +55,7 @@ class RecordRenderer implements RenderingInterface
      * Whether the required arguments for rendering are present or not
      *
      * @param Request $request
+     *
      * @return bool
      */
     public function canRender(Request $request)
@@ -64,6 +66,7 @@ class RecordRenderer implements RenderingInterface
     /**
      * @param Request $request
      * @param RenderingContext $renderingContext
+     *
      * @return array
      */
     protected function resolveRenderingConfiguration(Request $request, RenderingContext $renderingContext)

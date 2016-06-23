@@ -99,7 +99,7 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
      * @param string $pluginName
      * @param string $contextRecord
      *
-     * @return array
+     * @return string[]
      */
     public function buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord)
     {

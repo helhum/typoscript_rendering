@@ -27,9 +27,6 @@ namespace Helhum\TyposcriptRendering;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * Class Exception
- */
 class Exception extends \TYPO3\CMS\Core\Error\Exception
 {
 }
