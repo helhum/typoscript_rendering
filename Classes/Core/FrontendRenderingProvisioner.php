@@ -27,6 +27,7 @@ namespace Helhum\TyposcriptRendering\Core;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -106,7 +107,7 @@ class FrontendRenderingProvisioner
      */
     protected function configurePageRenderer(TypoScriptFrontendController $typoScriptFrontendController)
     {
-        $pageRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Page\\PageRenderer');
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
         // Setting XHTML-doctype from doctype
         if (!$typoScriptFrontendController->config['config']['xhtmlDoctype']) {
             $typoScriptFrontendController->config['config']['xhtmlDoctype'] = $typoScriptFrontendController->config['config']['doctype'];

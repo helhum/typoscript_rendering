@@ -31,6 +31,8 @@ use Helhum\TyposcriptRendering\Mvc\Request;
 use Helhum\TyposcriptRendering\Renderer\RecordRenderer;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 use TYPO3\CMS\Core\Tests\UnitTestCase;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
+use TYPO3\CMS\Frontend\Page\PageRepository;
 
 /**
  * Class RecordRendererTest
@@ -44,7 +46,7 @@ class RecordRendererTest extends UnitTestCase
 
     protected function setUp()
     {
-        $this->renderer = $this->getAccessibleMock('Helhum\\TyposcriptRendering\\Renderer\\RecordRenderer', array('dummy'));
+        $this->renderer = $this->getAccessibleMock(RecordRenderer::class, ['dummy']);
     }
 
     /**
@@ -114,8 +116,8 @@ class RecordRendererTest extends UnitTestCase
      */
     public function configurationIsGeneratedCorrectlyFromRequest(array $requestArguments, array $expectedConfiguration, $pageId = '42')
     {
-        $tsfeMock = $this->getMock('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', array(), array(), '', false);
-        $pageRepositoryMock = $this->getMock('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $tsfeMock = $this->getMock(TypoScriptFrontendController::class, [], [], '', false);
+        $pageRepositoryMock = $this->getMock(PageRepository::class);
         $pageRepositoryMock->expects($this->any())->method('getRootLine')->willReturn(
                 array(
                     array(

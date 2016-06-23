@@ -49,7 +49,7 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
 
     protected function setUp()
     {
-        $this->typoScriptControllerMock = $this->getMock('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', array(), array(), '', false);
+        $this->typoScriptControllerMock = $this->getMock(TypoScriptFrontendController::class, [], [], '', false);
         $this->configurationBuilder = new RecordRenderingConfigurationBuilder(new RenderingContext($this->typoScriptControllerMock));
     }
 
