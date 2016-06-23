@@ -39,7 +39,7 @@ class RenderingTest extends AbstractRenderingTestCase
      */
     public function urlGeneratedRespectAbsRefPrefixAndLinkVarsAndTarget()
     {
-        $requestArguments = array('url' => $this->getRenderUrl(1, 1, 'lib.link'));
+        $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.link')];
         $expectedContent = '<a href="/index.php?id=1&amp;L=1" target="_blank">link</a>';
         $this->assertSame($expectedContent, $this->fetchFrontendResponse($requestArguments)->getContent());
     }
@@ -49,7 +49,7 @@ class RenderingTest extends AbstractRenderingTestCase
      */
     public function emailViewHelperWorksAlsoWithSpamProtection()
     {
-        $requestArguments = array('url' => $this->getRenderUrl(1, 1, 'lib.fluid'));
+        $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.fluid')];
         $expectedContent = '<a href="javascript:linkTo_UnCryptMailto(\'ocknvq,kphqBjgnjwo0kq\');">info(AT)helhum(DOT)io</a>';
         $this->assertSame($expectedContent, $this->fetchFrontendResponse($requestArguments)->getContent());
     }

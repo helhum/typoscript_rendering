@@ -59,10 +59,10 @@ class RecordRenderingConfigurationBuilder
         list($tableName, $uid) = $this->resolveTableNameAndUidFromContextString($contextRecord);
         $pluginSignature = $this->buildPluginSignature($extensionName, $pluginName);
 
-        return array(
+        return [
             'record' => $tableName . '_' . $uid,
-            'path' => 'tt_content.list.20.' . $pluginSignature
-        );
+            'path' => 'tt_content.list.20.' . $pluginSignature,
+        ];
     }
 
     /**
@@ -81,11 +81,11 @@ class RecordRenderingConfigurationBuilder
         }
 
         if ($contextRecord === 'currentPage') {
-            $tableNameAndUid = array('pages', $this->renderingContext->getFrontendController()->id);
+            $tableNameAndUid = ['pages', $this->renderingContext->getFrontendController()->id];
         } else {
             $tableNameAndUid = explode(':', $contextRecord);
             if (count($tableNameAndUid) !== 2 || empty($tableNameAndUid[0]) || empty($tableNameAndUid[1]) || !MathUtility::canBeInterpretedAsInteger($tableNameAndUid[1])) {
-                $tableNameAndUid = array('pages', $this->renderingContext->getFrontendController()->id);
+                $tableNameAndUid = ['pages', $this->renderingContext->getFrontendController()->id];
             }
         }
 

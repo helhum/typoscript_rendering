@@ -68,7 +68,7 @@ class RecordRenderer implements RenderingInterface
      */
     protected function resolveRenderingConfiguration(Request $request, RenderingContext $renderingContext)
     {
-        $configuration = array();
+        $configuration = [];
 
         if ($request->hasArgument('path')) {
             $renderingPath = $request->getArgument('path');
