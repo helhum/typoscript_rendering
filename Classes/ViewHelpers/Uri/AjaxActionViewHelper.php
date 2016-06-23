@@ -18,7 +18,7 @@ use Helhum\TyposcriptRendering\Configuration\RecordRenderingConfigurationBuilder
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 
 /**
- * A view helper for creating "Ajax" URIs to extbase actions.
+ * A view helper for creating Ajax URIs to extbase actions.
  *
  * = Examples =
  *
@@ -41,7 +41,7 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
     /**
      * @param string $action Target action
      * @param array $arguments Arguments
-     * @param string $controller Target controller. If NULL current controllerName is used
+     * @param string $controller Target controller in UpperCamelCase. If null, current controllerName is used.
      * @param string $extensionName Target Extension Name (without "tx_" prefix and no underscores). If NULL the current extension name is used
      * @param string $pluginName Target plugin. If empty, the current plugin name is used
      * @param int $pageUid target page. See TypoLink destination
@@ -54,6 +54,7 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
      * @param array $argumentsToBeExcludedFromQueryString arguments to be removed from the URI. Only active if $addQueryString = TRUE
      * @param string $addQueryStringMethod Set which parameters will be kept. Only active if $addQueryString = TRUE
      * @param string $contextRecord The record that the rendering should depend upon. e.g. current (default: record is fetched from current Extbase plugin), tt_content:12 (tt_content record with uid 12), pages:15 (pages record with uid 15), 'currentPage' record of current page
+     *
      * @return string Rendered link
      */
     public function render($action = null, array $arguments = array(), $controller = null, $extensionName = null, $pluginName = null, $pageUid = null, $section = '', $format = '', $linkAccessRestrictedPages = false, array $additionalParams = array(), $absolute = false, $addQueryString = false, array $argumentsToBeExcludedFromQueryString = array(), $addQueryStringMethod = null, $contextRecord = 'current')
@@ -97,6 +98,7 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
      * @param string $extensionName
      * @param string $pluginName
      * @param string $contextRecord
+     *
      * @return array
      */
     public function buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord)
