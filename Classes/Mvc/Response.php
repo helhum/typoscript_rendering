@@ -39,6 +39,8 @@ class Response
 
     /**
      * @param string $content
+     *
+     * @return void
      */
     public function setContent($content)
     {

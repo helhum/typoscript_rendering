@@ -33,7 +33,7 @@ use TYPO3\CMS\Core\Tests\UnitTestCase;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
- * Class RecordRenderingConfigurationBuilderTest
+ * Test case.
  */
 class RecordRenderingConfigurationBuilderTest extends UnitTestCase
 {
@@ -117,14 +117,14 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
     }
 
     /**
-     * @param $extensionName
-     * @param $pluginName
-     * @param $recordContext
-     * @param $expectedConfiguration
+     * @param string $extensionName
+     * @param string $pluginName
+     * @param string $recordContext
+     * @param string[] $expectedConfiguration
      * @test
      * @dataProvider pluginContextDataProvider
      */
-    public function buildingConfigurationWorks($extensionName, $pluginName, $recordContext, $expectedConfiguration)
+    public function buildingConfigurationWorks($extensionName, $pluginName, $recordContext, array $expectedConfiguration)
     {
         $this->typoScriptControllerMock->id = 42;
         $this->assertSame($expectedConfiguration, $this->configurationBuilder->configurationFor($extensionName, $pluginName, $recordContext));

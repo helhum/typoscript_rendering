@@ -30,9 +30,6 @@ namespace Helhum\TyposcriptRendering\Renderer;
 use Helhum\TyposcriptRendering\Mvc\Request;
 use Helhum\TyposcriptRendering\Mvc\Response;
 
-/**
- * Interface RenderingInterface
- */
 interface RenderingInterface
 {
     /**
@@ -42,6 +39,7 @@ interface RenderingInterface
      * @param Request $request
      * @param Response $response
      * @param RenderingContext $renderingContext
+     *
      * @return void
      */
     public function renderRequest(Request $request, Response $response, RenderingContext $renderingContext);
@@ -50,6 +48,7 @@ interface RenderingInterface
      * Whether the required arguments for rendering are present or not
      *
      * @param Request $request
+     *
      * @return bool
      */
     public function canRender(Request $request);

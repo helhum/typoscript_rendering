@@ -27,9 +27,6 @@ namespace Helhum\TyposcriptRendering\Configuration;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-/**
- * Class ConfigurationBuildingException
- */
 class ConfigurationBuildingException extends \Exception
 {
 }

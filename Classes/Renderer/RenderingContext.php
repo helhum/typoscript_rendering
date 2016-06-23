@@ -29,9 +29,6 @@ namespace Helhum\TyposcriptRendering\Renderer;
 
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
-/**
- * Class RenderingContext
- */
 class RenderingContext
 {
     /**
@@ -39,6 +36,11 @@ class RenderingContext
      */
     protected $frontendController;
 
+    /**
+     * Constructor.
+     *
+     * @param TypoScriptFrontendController $frontendController
+     */
     public function __construct(TypoScriptFrontendController $frontendController)
     {
         $this->frontendController = $frontendController;

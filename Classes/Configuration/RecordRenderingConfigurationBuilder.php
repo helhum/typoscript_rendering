@@ -30,9 +30,6 @@ namespace Helhum\TyposcriptRendering\Configuration;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
-/**
- * Class RecordRenderingConfigurationBuilder
- */
 class RecordRenderingConfigurationBuilder
 {
     /**
@@ -52,7 +49,8 @@ class RecordRenderingConfigurationBuilder
      * @param string $extensionName
      * @param string $pluginName
      * @param string $contextRecord
-     * @return array
+     *
+     * @return string[]
      */
     public function configurationFor($extensionName, $pluginName, $contextRecord = 'currentPage')
     {
@@ -69,8 +67,9 @@ class RecordRenderingConfigurationBuilder
      * Resolves the table name and uid for the record the rendering is based upon.
      * Falls back to current page if none is available
      *
-     * @param $contextRecord
-     * @return array table name as first and uid as second index of the array
+     * @param string $contextRecord
+     *
+     * @return string[] table name as first and uid as second index of the array
      *
      * @throws ConfigurationBuildingException
      */
@@ -99,7 +98,9 @@ class RecordRenderingConfigurationBuilder
      *
      * @param string $extensionName
      * @param string $pluginName
+     *
      * @return string
+     *
      * @see \TYPO3\CMS\Extbase\Utility\ExtensionUtility::configurePlugin()
      */
     protected function buildPluginSignature($extensionName, $pluginName)
