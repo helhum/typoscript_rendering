@@ -38,12 +38,12 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
     /**
      * @var array
      */
-    protected $testExtensionsToLoad = array('typo3conf/ext/typoscript_rendering');
+    protected $testExtensionsToLoad = ['typo3conf/ext/typoscript_rendering'];
 
     /**
      * @var array
      */
-    protected $coreExtensionsToLoad = array('fluid');
+    protected $coreExtensionsToLoad = ['fluid'];
 
     public function setUp()
     {
@@ -63,7 +63,7 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
      */
     protected function getRenderUrl($pageId, $languageId, $path)
     {
-        $requestArguments = array('id' => $pageId, 'L' => $languageId, 'path' => $path);
+        $requestArguments = ['id' => $pageId, 'L' => $languageId, 'path' => $path];
         return $this->fetchFrontendResponse($requestArguments)->getContent();
     }
 
@@ -71,14 +71,14 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
      * @param int $pageId
      * @param array $typoScriptFiles
      */
-    protected function setUpFrontendRootPage($pageId, array $typoScriptFiles = array())
+    protected function setUpFrontendRootPage($pageId, array $typoScriptFiles = [])
     {
-        $page = array(
+        $page = [
             'uid' => $pageId,
             'title' => 'root'
-        );
+        ];
         $this->getDatabaseConnection()->exec_INSERTquery('pages', $page);
-        parent::setUpFrontendRootPage($pageId, array('EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Basic.ts'));
+        parent::setUpFrontendRootPage($pageId, ['EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Basic.ts']);
     }
 
     /**
@@ -99,17 +99,17 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
         } else {
             $instancePath = ORIGINAL_ROOT . 'typo3temp/functional-' . substr(sha1(get_class($this)), 0, 7);
         }
-        $arguments = array(
+        $arguments = [
             'documentRoot' => $instancePath,
             'requestUrl' => 'http://localhost' . $requestUrl,
-        );
+        ];
 
         $template = new \Text_Template(ORIGINAL_ROOT . 'typo3/sysext/core/Tests/Functional/Fixtures/Frontend/request.tpl');
         $template->setVar(
-            array(
+            [
                 'arguments' => var_export($arguments, true),
                 'originalRoot' => ORIGINAL_ROOT,
-            )
+            ]
         );
 
         $php = \PHPUnit_Util_PHP::factory();

@@ -54,7 +54,7 @@ class RenderingDispatcher
     /**
      * @var array
      */
-    protected $renderer = array();
+    protected $renderer = [];
 
     /**
      * @param RequestBuilder $requestBuilder
