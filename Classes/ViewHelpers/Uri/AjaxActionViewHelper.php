@@ -87,12 +87,8 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
             ->setArguments($additionalParams)
             ->setCreateAbsoluteUri($absolute)
             ->setAddQueryString($addQueryString)
+            ->setAddQueryStringMethod($addQueryStringMethod)
             ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString);
-
-        // TYPO3 6.0 compatibility check:
-        if (method_exists($uriBuilder, 'setAddQueryStringMethod')) {
-            $uriBuilder->setAddQueryStringMethod($addQueryStringMethod);
-        }
 
         return $uriBuilder->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
     }
