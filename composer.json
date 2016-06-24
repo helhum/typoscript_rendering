@@ -41,8 +41,8 @@
         }
     },
     "replace": {
-        "typo3_console": "self.version",
-        "typo3-ter/typo3-console": "self.version"
+        "typoscript_rendering": "self.version",
+        "typo3-ter/typoscript-rendering": "self.version"
     },
     "config": {
         "vendor-dir": ".Build/vendor",
