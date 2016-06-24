@@ -51,6 +51,21 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
     {
         $this->typoScriptControllerMock = $this->getMock('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', array(), array(), '', false);
         $this->configurationBuilder = new RecordRenderingConfigurationBuilder(new RenderingContext($this->typoScriptControllerMock));
+        $this->typoScriptControllerMock->tmpl = new \stdClass();
+        $this->typoScriptControllerMock->tmpl->setup = array(
+            'tt_content.' => array(
+                'list.' => array(
+                    '20.' => array(
+                        'news_pi1' => 'USER',
+                        'news_pi1.' => array(),
+                    )
+                ),
+                'news_pi2.' => array(
+                    '20' => 'USER',
+                    '20.' => array()
+                )
+            )
+        );
     }
 
     /**
@@ -64,6 +79,12 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
                 'Pi1',
                 'pages:1',
                 array('record' => 'pages_1', 'path' => 'tt_content.list.20.news_pi1'),
+            ),
+            'page specified, content element' => array(
+                'News',
+                'Pi2',
+                'pages:1',
+                array('record' => 'pages_1', 'path' => 'tt_content.news_pi2.20'),
             ),
             'tt_content specified' => array(
                 'News',
@@ -132,10 +153,21 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
 
     /**
      * @test
-     * @expectedException \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      */
     public function buildingConfigurationThrowsExceptionIfInvalidTypesAreGiven()
     {
+        $this->expectException('Helhum\\TyposcriptRendering\\Configuration\\ConfigurationBuildingException');
+        $this->expectExceptionCode(1416846201);
         $this->configurationBuilder->configurationFor('foo', 'PiBar', array());
+    }
+
+    /**
+     * @test
+     */
+    public function buildingConfigurationThrowsExceptionIfRenderingConfigIsNotFound()
+    {
+        $this->expectException('Helhum\\TyposcriptRendering\\Configuration\\ConfigurationBuildingException');
+        $this->expectExceptionCode(1466779430);
+        $this->configurationBuilder->configurationFor('News', 'Pi3', 'current');
     }
 }

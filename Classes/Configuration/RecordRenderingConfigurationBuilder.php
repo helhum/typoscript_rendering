@@ -51,15 +51,16 @@ class RecordRenderingConfigurationBuilder
      * @param string $contextRecord
      *
      * @return string[]
+     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      */
     public function configurationFor($extensionName, $pluginName, $contextRecord = 'currentPage')
     {
         list($tableName, $uid) = $this->resolveTableNameAndUidFromContextString($contextRecord);
         $pluginSignature = $this->buildPluginSignature($extensionName, $pluginName);
-
+        $renderingPath = $this->resolveRenderingPath($pluginSignature);
         return array(
             'record' => $tableName . '_' . $uid,
-            'path' => 'tt_content.list.20.' . $pluginSignature
+            'path' => $renderingPath
         );
     }
 
@@ -87,9 +88,7 @@ class RecordRenderingConfigurationBuilder
                 $tableNameAndUid = array('pages', $this->renderingContext->getFrontendController()->id);
             }
         }
-
         // TODO: maybe check if the record is available
-
         return $tableNameAndUid;
     }
 
@@ -114,4 +113,19 @@ class RecordRenderingConfigurationBuilder
 
         return strtolower($extensionName . '_' . $pluginName);
     }
-}
+
+    /**
+     * @param string $pluginSignature
+     * @return string
+     * @throws ConfigurationBuildingException
+     */
+    protected function resolveRenderingPath($pluginSignature)
+    {
+        $typoScriptRenderingSetup = $this->renderingContext->getFrontendController()->tmpl->setup['tt_content.'];
+        if (isset($typoScriptRenderingSetup[$pluginSignature . '.']['20'])) {
+            return sprintf('tt_content.%s.20', $pluginSignature);
+        } elseif(isset($typoScriptRenderingSetup['list.']['20.'][$pluginSignature])) {
+            return sprintf('tt_content.list.20.%s', $pluginSignature);
+        }
+        throw new ConfigurationBuildingException(sprintf('Could not determine rendering location for plugin signature "%s"', $pluginSignature), 1466779430);
+    }}
