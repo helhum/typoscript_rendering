@@ -116,8 +116,10 @@ class RecordRendererTest extends UnitTestCase
     public function configurationIsGeneratedCorrectlyFromRequest(array $requestArguments, array $expectedConfiguration, $pageId = '42')
     {
         /** @var TypoScriptFrontendController|\PHPUnit_Framework_MockObject_MockObject $tsfeMock */
-        $tsfeMock = $this->getMock('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', array(), array(), '', false);
-        $pageRepositoryMock = $this->getMock('TYPO3\\CMS\\Frontend\\Page\\PageRepository');
+        $tsfeMock = $this->getMockBuilder('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $pageRepositoryMock = $this->getMockBuilder('TYPO3\\CMS\\Frontend\\Page\\PageRepository')->getMock();
         $pageRepositoryMock->expects($this->any())->method('getRootLine')->willReturn(
                 array(
                     array(

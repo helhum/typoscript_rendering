@@ -49,7 +49,9 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
 
     protected function setUp()
     {
-        $this->typoScriptControllerMock = $this->getMock('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController', array(), array(), '', false);
+        $this->typoScriptControllerMock = $this->getMockBuilder('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController')
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->configurationBuilder = new RecordRenderingConfigurationBuilder(new RenderingContext($this->typoScriptControllerMock));
         $this->typoScriptControllerMock->tmpl = new \stdClass();
         $this->typoScriptControllerMock->tmpl->setup = array(
@@ -153,21 +155,21 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
 
     /**
      * @test
+     * @expectedException \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
+     * @expectedExceptionCode 1416846201
      */
     public function buildingConfigurationThrowsExceptionIfInvalidTypesAreGiven()
     {
-        $this->expectException('Helhum\\TyposcriptRendering\\Configuration\\ConfigurationBuildingException');
-        $this->expectExceptionCode(1416846201);
         $this->configurationBuilder->configurationFor('foo', 'PiBar', array());
     }
 
     /**
      * @test
+     * @expectedException \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
+     * @expectedExceptionCode 1466779430
      */
     public function buildingConfigurationThrowsExceptionIfRenderingConfigIsNotFound()
     {
-        $this->expectException('Helhum\\TyposcriptRendering\\Configuration\\ConfigurationBuildingException');
-        $this->expectExceptionCode(1466779430);
         $this->configurationBuilder->configurationFor('News', 'Pi3', 'current');
     }
 }
