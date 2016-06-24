@@ -1,27 +1,34 @@
 language: php
 
+branches:
+  only:
+    - master
+    - /^[0-9]+\.[0-9]+\.[0-9]+$/
+
 matrix:
+  allow_failures:
+    - env: TYPO3_VERSION=dev-master
   include:
     - php: 5.3
-      env: TYPO3_BRANCH=TYPO3_6-2
+      env: TYPO3_VERSION=^6.2
     - php: 5.4
-      env: TYPO3_BRANCH=TYPO3_6-2
+      env: TYPO3_VERSION=^6.2
     - php: 5.5
-      env: TYPO3_BRANCH=TYPO3_6-2
+      env: TYPO3_VERSION=^6.2
     - php: 5.6
-      env: TYPO3_BRANCH=TYPO3_6-2
+      env: TYPO3_VERSION=^6.2
     - php: 5.5
-      env: TYPO3_BRANCH=TYPO3_7-6
+      env: TYPO3_VERSION=^7.6
     - php: 5.6
-      env: TYPO3_BRANCH=TYPO3_7-6
+      env: TYPO3_VERSION=^7.6
     - php: 7.0
-      env: TYPO3_BRANCH=TYPO3_7-6
+      env: TYPO3_VERSION=^7.6
     - php: 7.0
-      env: TYPO3_BRANCH=master
+      env: TYPO3_VERSION=dev-master
 
 notifications:
   email:
-    - helmut@typo3.org
+    - typo3@helhum.io
 
 sudo: false
 cache:
@@ -37,34 +44,41 @@ before_install:
   - phpenv config-rm xdebug.ini
   - composer self-update
   - composer --version
-  - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
 
 before_script:
-  - cd ..
-  - git clone --single-branch --branch $TYPO3_BRANCH --depth 1 https://github.com/TYPO3/TYPO3.CMS.git typo3_core
-  - mv typo3_core/* .
-  - composer install
-  - mkdir -p typo3conf/ext
-  - mv typoscript_rendering typo3conf/ext/
+  - composer require typo3/cms=$TYPO3_VERSION
+  - export TYPO3_PATH_WEB="$PWD/.Build/Web"
 
 script:
   - >
     echo;
     echo "Running unit tests";
-    ./bin/phpunit --colors -c typo3/sysext/core/Build/UnitTests.xml typo3conf/ext/typoscript_rendering/Tests/Unit/
+    .Build/bin/phpunit -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/UnitTests.xml Tests/Unit/
+
   - >
     echo;
     echo "Running php lint";
-    /bin/bash -c "
-        if ! find typo3conf/ext/typoscript_rendering -name \*.php | parallel --gnu 'php -l {}' > /tmp/errors 2>&1; then
-            grep -v \"No syntax errors detected in\" /tmp/errors;
-            exit 99;
-        fi
-    "
+    find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
+
   - >
     echo;
     export typo3DatabaseName="typo3";
     export typo3DatabaseHost="localhost";
     export typo3DatabaseUsername="root";
     export typo3DatabasePassword="";
-    find 'typo3conf/ext/typoscript_rendering/Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; ./bin/phpunit --colors -c typo3/sysext/core/Build/FunctionalTests.xml {}'
+    find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; .Build/bin/phpunit -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/FunctionalTests.xml {}'
+
+after_script:
+  - >
+    if [ -n "$TRAVIS_TAG" ] && [ -n "$TYPO3_ORG_USERNAME" ] && [ -n "$TYPO3_ORG_PASSWORD" ]; then
+      echo -e "Preparing upload of release ${TRAVIS_TAG} to TER\n"
+      curl -sSL https://raw.githubusercontent.com/alrra/travis-after-all/1.4.4/lib/travis-after-all.js | node
+      if [ $? -eq 0 ]; then
+        # Cleanup before we upload
+        git reset --hard HEAD && git clean -fx
+
+        TAG_MESSAGE=`git tag -n10 -l $TRAVIS_TAG | sed 's/^[0-9.]*[ ]*//g'`
+        echo "Uploading release ${TRAVIS_TAG} to TER"
+        .Build/bin/upload . "$TYPO3_ORG_USERNAME" "$TYPO3_ORG_PASSWORD" "$TAG_MESSAGE"
+      fi;
+    fi;
