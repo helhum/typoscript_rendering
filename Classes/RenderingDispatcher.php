@@ -44,7 +44,6 @@ class RenderingDispatcher
 
     /**
      * @param RequestBuilder $requestBuilder
-     *
      * @param string[] $renderer
      */
     public function __construct(RequestBuilder $requestBuilder = null, array $renderer = null)
@@ -106,9 +105,9 @@ class RenderingDispatcher
      */
     protected function resolveRenderer(Request $request)
     {
-        /** @var RenderingInterface $renderer */
         if ($request->hasArgument('renderer') && isset($this->renderer[$request->getArgument('renderer')])) {
             $rendererClassName = $this->renderer[$request->getArgument('renderer')];
+            /** @var RenderingInterface $renderer */
             $renderer = new $rendererClassName();
             if ($renderer->canRender($request)) {
                 return $renderer;
@@ -116,6 +115,7 @@ class RenderingDispatcher
         }
 
         foreach ($this->renderer as $rendererClassName) {
+            /** @var RenderingInterface $renderer */
             $renderer = new $rendererClassName();
             if ($renderer->canRender($request)) {
                 return $renderer;

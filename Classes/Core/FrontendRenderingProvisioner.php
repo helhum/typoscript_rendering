@@ -19,6 +19,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 /**
  * Class FrontendRenderingProvisioner
  * Initializes TYPO3 TypoScriptRendering to be prepared for rendering
+ *
  * @see \TYPO3\CMS\Frontend\Page\PageGenerator::pagegenInit()
  * This is a try to only initialize a basic set as not everything in pagegenInit() makes sense in our case.
  * But it might well be that it'd be better to just use the (ugly) API instead.

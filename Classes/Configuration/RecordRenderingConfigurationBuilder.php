@@ -37,6 +37,7 @@ class RecordRenderingConfigurationBuilder
      * @param string $contextRecord
      *
      * @return string[]
+     *
      * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      */
     public function configurationFor($extensionName, $pluginName, $contextRecord = 'currentPage')
@@ -46,7 +47,7 @@ class RecordRenderingConfigurationBuilder
         $renderingPath = $this->resolveRenderingPath($pluginSignature);
         return array(
             'record' => $tableName . '_' . $uid,
-            'path' => $renderingPath
+            'path' => $renderingPath,
         );
     }
 
@@ -102,7 +103,9 @@ class RecordRenderingConfigurationBuilder
 
     /**
      * @param string $pluginSignature
+     *
      * @return string
+     *
      * @throws ConfigurationBuildingException
      */
     protected function resolveRenderingPath($pluginSignature)
@@ -110,8 +113,9 @@ class RecordRenderingConfigurationBuilder
         $typoScriptRenderingSetup = $this->renderingContext->getFrontendController()->tmpl->setup['tt_content.'];
         if (isset($typoScriptRenderingSetup[$pluginSignature . '.']['20'])) {
             return sprintf('tt_content.%s.20', $pluginSignature);
-        } elseif(isset($typoScriptRenderingSetup['list.']['20.'][$pluginSignature])) {
+        } elseif (isset($typoScriptRenderingSetup['list.']['20.'][$pluginSignature])) {
             return sprintf('tt_content.list.20.%s', $pluginSignature);
         }
         throw new ConfigurationBuildingException(sprintf('Could not determine rendering location for plugin signature "%s"', $pluginSignature), 1466779430);
-    }}
+    }
+}

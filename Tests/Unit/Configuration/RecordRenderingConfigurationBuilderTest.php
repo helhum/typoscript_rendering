@@ -46,13 +46,13 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
                     '20.' => array(
                         'news_pi1' => 'USER',
                         'news_pi1.' => array(),
-                    )
+                    ),
                 ),
                 'news_pi2.' => array(
                     '20' => 'USER',
-                    '20.' => array()
-                )
-            )
+                    '20.' => array(),
+                ),
+            ),
         );
     }
 

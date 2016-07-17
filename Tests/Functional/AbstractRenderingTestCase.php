@@ -65,7 +65,7 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
     {
         $page = array(
             'uid' => $pageId,
-            'title' => 'root'
+            'title' => 'root',
         );
         $this->getDatabaseConnection()->exec_INSERTquery('pages', $page);
         parent::setUpFrontendRootPage($pageId, array('EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Basic.ts'));
