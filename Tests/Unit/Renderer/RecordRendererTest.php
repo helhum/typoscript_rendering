@@ -87,7 +87,7 @@ class RecordRendererTest extends UnitTestCase
             'root page' => array(
                 array('path' => ''),
                 array('dontCheckPid' => '1', 'source' => 'pages_1', 'tables' => 'pages'),
-                '1'
+                '1',
             ),
         );
     }
@@ -111,7 +111,7 @@ class RecordRendererTest extends UnitTestCase
                     array(
                         'uid' => '1',
                         'pid' => '0',
-                    )
+                    ),
                 )
         );
         $tsfeMock->id = $pageId;

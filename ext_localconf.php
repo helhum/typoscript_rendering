@@ -7,7 +7,7 @@ call_user_func(function ($packageKey) {
 
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['typoscript_rendering'] = array();
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['typoscript_rendering']['renderClasses'] = array(
-        'record' => 'Helhum\\TyposcriptRendering\\Renderer\\RecordRenderer'
+        'record' => 'Helhum\\TyposcriptRendering\\Renderer\\RecordRenderer',
     );
 
 }, $_EXTKEY);
