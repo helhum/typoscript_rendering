@@ -79,9 +79,9 @@ class RenderingDispatcher
     }
 
     /**
+     * @throws Exception
      * @return void
      *
-     * @throws Exception
      */
     protected function ensureRequiredEnvironment()
     {
@@ -99,9 +99,9 @@ class RenderingDispatcher
     /**
      * @param Request $request
      *
+     * @throws Exception
      * @return RenderingInterface
      *
-     * @throws Exception
      */
     protected function resolveRenderer(Request $request)
     {

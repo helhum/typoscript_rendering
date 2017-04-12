@@ -16,9 +16,6 @@ namespace Helhum\TyposcriptRendering\ViewHelpers\Widget;
 use Helhum\TyposcriptRendering\Configuration\RecordRenderingConfigurationBuilder;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 
-/**
- *
- */
 class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
     /**
@@ -51,25 +48,24 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
      * @param bool $ajax true if the URI should be to an Ajax widget, false otherwise.
      * @param string $contextRecord The record that the rendering should depend upon. e.g. current (default: record is fetched from current Extbase plugin), tt_content:12 (tt_content record with uid 12), pages:15 (pages record with uid 15), 'currentPage' record of current page
      *
+     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      * @return string The rendered link
      *
-     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      */
     public function render($pluginName, $extensionName, $action = null, array $arguments = array(), $section = '', $format = '', $ajax = true, $contextRecord = 'current')
     {
         if ($ajax === true) {
             return $this->getAjaxUri();
-        } else {
-            return $this->getWidgetUri();
         }
+        return $this->getWidgetUri();
     }
 
     /**
      * Get the URI for an Ajax Request.
      *
+     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      * @return string the Ajax URI
      *
-     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      */
     protected function getAjaxUri()
     {
@@ -148,9 +144,9 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
      * @param string $pluginName
      * @param string $contextRecord
      *
+     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      * @return string[]
      *
-     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      */
     public function buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord)
     {

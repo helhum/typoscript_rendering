@@ -41,9 +41,9 @@ class Request
     /**
      * @param string $argumentName
      *
+     * @throws \InvalidArgumentException
      * @return mixed
      *
-     * @throws \InvalidArgumentException
      */
     public function getArgument($argumentName)
     {

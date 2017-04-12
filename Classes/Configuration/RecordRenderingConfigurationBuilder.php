@@ -36,9 +36,9 @@ class RecordRenderingConfigurationBuilder
      * @param string $pluginName
      * @param string $contextRecord
      *
+     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      * @return string[]
      *
-     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      */
     public function configurationFor($extensionName, $pluginName, $contextRecord = 'currentPage')
     {
@@ -57,9 +57,9 @@ class RecordRenderingConfigurationBuilder
      *
      * @param string $contextRecord
      *
+     * @throws ConfigurationBuildingException
      * @return string[] table name as first and uid as second index of the array
      *
-     * @throws ConfigurationBuildingException
      */
     protected function resolveTableNameAndUidFromContextString($contextRecord)
     {
@@ -104,9 +104,9 @@ class RecordRenderingConfigurationBuilder
     /**
      * @param string $pluginSignature
      *
+     * @throws ConfigurationBuildingException
      * @return string
      *
-     * @throws ConfigurationBuildingException
      */
     protected function resolveRenderingPath($pluginSignature)
     {
