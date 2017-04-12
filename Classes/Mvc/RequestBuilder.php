@@ -20,9 +20,9 @@ class RequestBuilder
     /**
      * @param mixed $rawRequestArgument
      *
+     * @throws \Helhum\TyposcriptRendering\Exception
      * @return Request
      *
-     * @throws \Helhum\TyposcriptRendering\Exception
      */
     public function build($rawRequestArgument)
     {
