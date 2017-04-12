@@ -74,6 +74,7 @@ after_script:
       echo -e "Preparing upload of release ${TRAVIS_TAG} to TER\n"
       curl -sSL https://raw.githubusercontent.com/alrra/travis-after-all/1.4.4/lib/travis-after-all.js | node
       if [ $? -eq 0 ]; then
+        composer require --dev namelesscoder/typo3-repository-client:^1.2.0
         # Cleanup before we upload
         git reset --hard HEAD && git clean -fx
 
