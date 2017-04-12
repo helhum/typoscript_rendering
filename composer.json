@@ -25,18 +25,16 @@
         "typo3/cms-core": "^6.2 || ^7.6 || ^8.0"
     },
     "require-dev": {
-        "mikey179/vfsStream": "~1.6.0",
-        "phpunit/phpunit": "~4.8.0"
+        "nimut/testing-framework": "^1.0"
     },
     "autoload": {
         "psr-4": {
-            "Helhum\\TyposcriptRendering\\": "Classes"
+            "Helhum\\TyposcriptRendering\\": "Classes/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Helhum\\TyposcriptRendering\\Tests\\": "Tests",
-            "TYPO3\\CMS\\Core\\Tests\\": ".Build/vendor/typo3/cms/typo3/sysext/core/Tests/"
+            "Helhum\\TyposcriptRendering\\Tests\\": "Tests/"
         }
     },
     "replace": {
