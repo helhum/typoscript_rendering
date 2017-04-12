@@ -3,7 +3,7 @@ language: php
 branches:
   only:
     - master
-    - /^[0-9]+\.[0-9]+\.[0-9]+$/
+    - /^([0-9]+\.){1,2}(x|[0-9]+)$/
 
 matrix:
   allow_failures:
@@ -23,7 +23,15 @@ matrix:
       env: TYPO3_VERSION=^7.6
     - php: 7.0
       env: TYPO3_VERSION=^7.6
+    - php: 7.1
+      env: TYPO3_VERSION=^7.6
     - php: 7.0
+      env: TYPO3_VERSION=^8.7
+    - php: 7.1
+      env: TYPO3_VERSION=^8.7
+    - php: 7.0
+      env: TYPO3_VERSION=dev-master
+    - php: 7.1
       env: TYPO3_VERSION=dev-master
 
 notifications:
@@ -42,8 +50,6 @@ addons:
 
 before_install:
   - phpenv config-rm xdebug.ini
-  - composer self-update
-  - composer --version
 
 before_script:
   - composer require typo3/cms=$TYPO3_VERSION
