@@ -16,7 +16,7 @@ namespace Helhum\TyposcriptRendering\Tests\Unit\Renderer;
 use Helhum\TyposcriptRendering\Mvc\Request;
 use Helhum\TyposcriptRendering\Renderer\RecordRenderer;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
-use TYPO3\CMS\Core\Tests\UnitTestCase;
+use Nimut\TestingFramework\TestCase\UnitTestCase;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
