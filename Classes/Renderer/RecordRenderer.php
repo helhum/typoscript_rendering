@@ -89,7 +89,7 @@ class RecordRenderer implements RenderingInterface
             // We explicitly ignore the case where the to be rendered id is in another root line (multi domain setup)
             // as this would require an additional record lookup. The use case for this is very limited anyway
             // and should be implemented in a different renderer instead of covering that here.
-            if ($rootLine[0]['uid'] === (string)$id) {
+            if ((int)$rootLine[0]['uid'] === (int)$id) {
                 $configuration['dontCheckPid'] = '1';
             }
         }
