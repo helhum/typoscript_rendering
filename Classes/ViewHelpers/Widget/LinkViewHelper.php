@@ -64,13 +64,10 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
      */
     public function render($pluginName, $extensionName, $action = null, array $arguments = array(), $section = '', $format = '', $ajax = true, $contextRecord = 'current')
     {
-        if ($ajax === true) {
-            $uri = $this->getAjaxUri();
-        } else {
-            $uri = $this->getWidgetUri();
-        }
+        $uri = $ajax ? $this->getAjaxUri() : $this->getWidgetUri();
         $this->tag->addAttribute('href', $uri);
         $this->tag->setContent($this->renderChildren());
+
         return $this->tag->render();
     }
 
