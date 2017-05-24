@@ -141,6 +141,8 @@ class FrontendRenderingProvisioner
     protected function configureImageProcessing(TypoScriptFrontendController $typoScriptFrontendController)
     {
         $GLOBALS['TYPO3_CONF_VARS']['GFX']['im_noScaleUp'] = isset($typoScriptFrontendController->config['config']['noScaleUp']) ? '' . $typoScriptFrontendController->config['config']['noScaleUp'] : $GLOBALS['TYPO3_CONF_VARS']['GFX']['im_noScaleUp'];
-        $typoScriptFrontendController->TYPO3_CONF_VARS['GFX']['im_noScaleUp'] = $GLOBALS['TYPO3_CONF_VARS']['GFX']['im_noScaleUp'];
+        if (property_exists($typoScriptFrontendController, 'TYPO3_CONF_VARS')) {
+            $typoScriptFrontendController->TYPO3_CONF_VARS['GFX']['im_noScaleUp'] = $GLOBALS['TYPO3_CONF_VARS']['GFX']['im_noScaleUp'];
+        }
     }
 }
