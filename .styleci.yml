@@ -55,4 +55,5 @@ finder:
     - "*.php"
   exclude:
     - ".Build"
+  not-name:
     - "ext_emconf.php"

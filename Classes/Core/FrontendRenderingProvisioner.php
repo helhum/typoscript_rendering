@@ -37,9 +37,13 @@ class FrontendRenderingProvisioner
         $this->configureLinkBuilding($typoScriptFrontendController);
         $this->configurePageRenderer($typoScriptFrontendController);
         $this->configureImageProcessing($typoScriptFrontendController);
+        $this->fixNoScriptInclude($typoScriptFrontendController);
 
         // Create new top level content object which is required by some rendering methods
         $typoScriptFrontendController->newCObj();
+
+        // Bypass any other page rendering, by including our own dummy rendering
+        $typoScriptFrontendController->config['config']['pageGenScript'] = 'EXT:typoscript_rendering/Scripts/DummyRendering.php';
     }
 
     /**
@@ -47,7 +51,7 @@ class FrontendRenderingProvisioner
      *
      * @return void
      */
-    protected function configureLinkBuilding(TypoScriptFrontendController $typoScriptFrontendController)
+    private function configureLinkBuilding(TypoScriptFrontendController $typoScriptFrontendController)
     {
         // Mount point parameters
         if ($typoScriptFrontendController->config['config']['MP_defaults']) {
@@ -97,7 +101,7 @@ class FrontendRenderingProvisioner
      *
      * @return void
      */
-    protected function configurePageRenderer(TypoScriptFrontendController $typoScriptFrontendController)
+    private function configurePageRenderer(TypoScriptFrontendController $typoScriptFrontendController)
     {
         $pageRenderer = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Page\\PageRenderer');
         // Setting XHTML-doctype from doctype
@@ -138,11 +142,24 @@ class FrontendRenderingProvisioner
      *
      * @return void
      */
-    protected function configureImageProcessing(TypoScriptFrontendController $typoScriptFrontendController)
+    private function configureImageProcessing(TypoScriptFrontendController $typoScriptFrontendController)
     {
         $GLOBALS['TYPO3_CONF_VARS']['GFX']['im_noScaleUp'] = isset($typoScriptFrontendController->config['config']['noScaleUp']) ? '' . $typoScriptFrontendController->config['config']['noScaleUp'] : $GLOBALS['TYPO3_CONF_VARS']['GFX']['im_noScaleUp'];
         if (property_exists($typoScriptFrontendController, 'TYPO3_CONF_VARS')) {
             $typoScriptFrontendController->TYPO3_CONF_VARS['GFX']['im_noScaleUp'] = $GLOBALS['TYPO3_CONF_VARS']['GFX']['im_noScaleUp'];
+        }
+    }
+
+    /**
+     * @param TypoScriptFrontendController $typoScriptFrontendController
+     *
+     * @return void
+     */
+    private function fixNoScriptInclude(TypoScriptFrontendController $typoScriptFrontendController)
+    {
+        $GLOBALS['TYPO3_CONF_VARS']['FE']['noPHPscriptInclude'] = false;
+        if (property_exists($typoScriptFrontendController, 'TYPO3_CONF_VARS')) {
+            $typoScriptFrontendController->TYPO3_CONF_VARS['FE']['noPHPscriptInclude'] = $GLOBALS['TYPO3_CONF_VARS']['FE']['noPHPscriptInclude'];
         }
     }
 }
