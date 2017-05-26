@@ -75,6 +75,12 @@ class RenderingDispatcher
 
             $typoScriptFrontendController->content = $response->getContent();
             $typoScriptFrontendController->config['config']['pageGenScript'] = 'EXT:typoscript_rendering/Scripts/DummyRendering.php';
+            // Force DummyRendering to be included, even if TYPO3 setup disallows inclusion of PHP scripts
+            if (property_exists($typoScriptFrontendController, 'TYPO3_CONF_VARS')) {
+                $typoScriptFrontendController->TYPO3_CONF_VARS['FE']['noPHPscriptInclude'] = false;
+            } else {
+                $GLOBALS['TYPO3_CONF_VARS']['FE']['noPHPscriptInclude'] = false;
+            }
         }
     }
 
