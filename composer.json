@@ -19,9 +19,9 @@
             "homepage": "http://helhum.io"
         }
     ],
-    "license": "GPL-2.0+",
+    "license": "GPL-2.0-or-later",
     "require": {
-        "php": ">=5.3.7",
+        "php": ">=5.5.0",
         "typo3/cms-core": "^6.2 || ^7.6 || ^8.0"
     },
     "require-dev": {
@@ -56,6 +56,7 @@
             "dev-master": "2.x-dev"
         },
         "typo3/cms": {
+            "extension-key": "typoscript_rendering",
             "cms-package-dir": "{$vendor-dir}/typo3/cms",
             "web-dir": ".Build/Web"
         }
