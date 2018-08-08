@@ -13,9 +13,6 @@ namespace Helhum\TyposcriptRendering\Tests\Functional;
  *
  */
 
-/**
- * Test case.
- */
 class RenderingTest extends AbstractRenderingTestCase
 {
     /**
