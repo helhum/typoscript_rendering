@@ -23,10 +23,6 @@ matrix:
       env: TYPO3_VERSION=^6.2
     - php: 5.5
       env: TYPO3_VERSION=^6.2
-    - php: 5.4
-      env: TYPO3_VERSION=^6.2
-    - php: 5.3
-      env: TYPO3_VERSION=^6.2
 
 notifications:
   email:
@@ -74,12 +70,12 @@ after_script:
       echo -e "Preparing upload of release ${TRAVIS_TAG} to TER\n"
       curl -sSL https://raw.githubusercontent.com/alrra/travis-after-all/1.4.4/lib/travis-after-all.js | node
       if [ $? -eq 0 ]; then
-        composer require --dev namelesscoder/typo3-repository-client:^1.2.0
+        composer require --dev helhum/ter-client
         # Cleanup before we upload
         git reset --hard HEAD && git clean -fx
 
         TAG_MESSAGE=`git tag -n10 -l $TRAVIS_TAG | sed 's/^[0-9.]*[ ]*//g'`
         echo "Uploading release ${TRAVIS_TAG} to TER"
-        .Build/bin/upload . "$TYPO3_ORG_USERNAME" "$TYPO3_ORG_PASSWORD" "$TAG_MESSAGE"
+        .Build/bin/upload typoscript_rendering . -u "$TYPO3_ORG_USERNAME" -p "$TYPO3_ORG_PASSWORD" -m "$TAG_MESSAGE"
       fi;
     fi;
