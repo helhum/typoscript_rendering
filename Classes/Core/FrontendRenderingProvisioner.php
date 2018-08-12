@@ -43,7 +43,7 @@ class FrontendRenderingProvisioner
         $typoScriptFrontendController->newCObj();
 
         // Bypass any other page rendering, by including our own dummy rendering
-        $typoScriptFrontendController->config['config']['pageGenScript'] = 'EXT:typoscript_rendering/Scripts/DummyRendering.php';
+        $typoScriptFrontendController->config['config']['pageGenScript'] = 'EXT:typoscript_rendering/Resources/Public/Scripts/DummyRendering.php';
     }
 
     /**
