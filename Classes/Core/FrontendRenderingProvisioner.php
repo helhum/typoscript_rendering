@@ -44,6 +44,8 @@ class FrontendRenderingProvisioner
 
         // Bypass any other page rendering, by including our own dummy rendering
         $typoScriptFrontendController->config['config']['pageGenScript'] = 'EXT:typoscript_rendering/Scripts/DummyRendering.php';
+        // Make sure current working dir is in PATH_site, so that the DummyRendering file is resolved correctly
+        chdir(PATH_site);
     }
 
     /**
