@@ -5,29 +5,6 @@ branches:
     - master
     - /^([0-9]+\.){1,2}(x|[0-9]+)$/
 
-matrix:
-  include:
-    - php: 7.2
-      env: TYPO3_VERSION=^8.7
-    - php: 7.1
-      env: TYPO3_VERSION=^8.7
-    - php: 7.0
-      env: TYPO3_VERSION=^8.7
-    - php: 7.2
-      env: TYPO3_VERSION=^7.6
-    - php: 7.1
-      env: TYPO3_VERSION=^7.6
-    - php: 7.0
-      env: TYPO3_VERSION=^7.6
-    - php: 5.6
-      env: TYPO3_VERSION=^7.6
-    - php: 5.5
-      env: TYPO3_VERSION=^7.6
-    - php: 5.6
-      env: TYPO3_VERSION=^6.2
-    - php: 5.5
-      env: TYPO3_VERSION=^6.2
-
 notifications:
   email:
     - typo3@helhum.io
@@ -45,7 +22,7 @@ addons:
 before_install:
   - phpenv config-rm xdebug.ini
 
-before_script:
+install:
   - composer require typo3/cms=$TYPO3_VERSION
   - export TYPO3_PATH_WEB="$PWD/.Build/Web"
 
@@ -68,18 +45,54 @@ script:
     export typo3DatabasePassword="";
     find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo "Running functional test suite {}"; .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}'
 
-after_script:
-  - >
-    if [ -n "$TRAVIS_TAG" ] && [ -n "$TYPO3_ORG_USERNAME" ] && [ -n "$TYPO3_ORG_PASSWORD" ]; then
-      echo -e "Preparing upload of release ${TRAVIS_TAG} to TER\n"
-      curl -sSL https://raw.githubusercontent.com/alrra/travis-after-all/1.4.4/lib/travis-after-all.js | node
-      if [ $? -eq 0 ]; then
-        composer require --dev helhum/ter-client
-        # Cleanup before we upload
-        git reset --hard HEAD && git clean -fx
+jobs:
+  fast_finish: true
+  include:
+    - stage: test
+      php: 7.2
+      env: TYPO3_VERSION=^8.7
+    - stage: test
+      php: 7.1
+      env: TYPO3_VERSION=^8.7
+    - stage: test
+      php: 7.0
+      env: TYPO3_VERSION=^8.7
+    - stage: test
+      php: 7.2
+      env: TYPO3_VERSION="^7.6"
+    - stage: test
+      php: 7.1
+      env: TYPO3_VERSION="^7.6"
+    - stage: test
+      php: 7.0
+      env: TYPO3_VERSION="^7.6"
+    - stage: test
+      php: 5.6
+      env: TYPO3_VERSION=^7.6
+    - stage: test
+      php: 5.5
+      env: TYPO3_VERSION=^7.6
+    - stage: test
+      php: 5.6
+      env: TYPO3_VERSION=^6.2
+    - stage: test
+      php: 5.5
+      env: TYPO3_VERSION=^6.2
 
-        TAG_MESSAGE=`git tag -n10 -l $TRAVIS_TAG | sed 's/^[0-9.]*[ ]*//g'`
-        echo "Uploading release ${TRAVIS_TAG} to TER"
-        .Build/bin/upload typoscript_rendering . -u "$TYPO3_ORG_USERNAME" -p "$TYPO3_ORG_PASSWORD" -m "$TAG_MESSAGE"
-      fi;
-    fi;
+    - stage: 🚢 to TER
+      if: tag IS present
+      php: 7.0
+      install: skip
+      before_script: skip
+      script:
+        - |
+          if [ -n "$TYPO3_ORG_USERNAME" ] && [ -n "$TYPO3_ORG_PASSWORD" ]; then
+            echo -e "Preparing upload of release ${TRAVIS_TAG} to TER\n";
+            # Install ter client
+            composer global require helhum/ter-client
+
+            # Upload
+            TAG_MESSAGE=`git tag -n10 -l $TRAVIS_TAG | sed 's/^[0-9.]*[ ]*//g'`
+            echo "Uploading release ${TRAVIS_TAG} to TER"
+            $HOME/.composer/vendor/bin/ter-client upload typoscript_rendering . -u "$TYPO3_ORG_USERNAME" -p "$TYPO3_ORG_PASSWORD" -m "$TAG_MESSAGE"
+          fi;
