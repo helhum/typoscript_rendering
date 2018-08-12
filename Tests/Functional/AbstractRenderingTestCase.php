@@ -15,6 +15,7 @@ namespace Helhum\TyposcriptRendering\Tests\Functional;
 
 use Nimut\TestingFramework\Http\Response;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
+use PHPUnit\Util\PHP\DefaultPhpProcess;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -32,23 +33,11 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
      */
     protected $coreExtensionsToLoad = array('fluid');
 
-    /**
-     * Avoid serlialization of the test system object
-     *
-     * @return array
-     */
-    public function __sleep()
-    {
-        $objectVars = get_object_vars($this);
-        unset($objectVars['testSystem']);
-
-        return $objectVars;
-    }
-
     public function setUp()
     {
         parent::setUp();
-        $this->setUpFrontendRootPage(1);
+        $this->importDataSet(__DIR__ . '/Fixtures/Database/pages.xml');
+        $this->setUpFrontendRootPage(1, array('EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Basic.ts'));
     }
 
     /* ***********************************************
@@ -66,22 +55,6 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
     {
         $requestArguments = array('id' => $pageId, 'L' => $languageId, 'path' => $path);
         return $this->fetchFrontendResponse($requestArguments)->getContent();
-    }
-
-    /**
-     * @param int $pageId
-     * @param array $typoScriptFiles
-     *
-     * @return void
-     */
-    protected function setUpFrontendRootPage($pageId, array $typoScriptFiles = array())
-    {
-        $page = array(
-            'uid' => $pageId,
-            'title' => 'root',
-        );
-        $this->getDatabaseConnection()->exec_INSERTquery('pages', $page);
-        parent::setUpFrontendRootPage($pageId, array('EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Basic.ts'));
     }
 
     /**
@@ -112,7 +85,11 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
             )
         );
 
-        $php = \PHPUnit_Util_PHP::factory();
+        if (class_exists('PHPUnit_Util_PHP')) {
+            $php = \PHPUnit_Util_PHP::factory();
+        } else {
+            $php = DefaultPhpProcess::factory();
+        }
         $response = $php->runJob($template->render());
         $result = json_decode($response['stdout'], true);
 
