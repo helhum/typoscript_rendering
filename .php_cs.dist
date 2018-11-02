@@ -4,7 +4,7 @@ return PhpCsFixer\Config::create()
     ->setRules([
         '@PSR2' => true,
         'array_syntax' => [
-            'syntax' => 'long',
+            'syntax' => 'short',
         ],
         'binary_operator_spaces' => true,
         'concat_space' => [

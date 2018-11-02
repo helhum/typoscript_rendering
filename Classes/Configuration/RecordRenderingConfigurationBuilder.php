@@ -45,10 +45,10 @@ class RecordRenderingConfigurationBuilder
         list($tableName, $uid) = $this->resolveTableNameAndUidFromContextString($contextRecord);
         $pluginSignature = $this->buildPluginSignature($extensionName, $pluginName);
         $renderingPath = $this->resolveRenderingPath($pluginSignature);
-        return array(
+        return [
             'record' => $tableName . '_' . $uid,
             'path' => $renderingPath,
-        );
+        ];
     }
 
     /**
@@ -68,11 +68,11 @@ class RecordRenderingConfigurationBuilder
         }
 
         if ($contextRecord === 'currentPage') {
-            $tableNameAndUid = array('pages', $this->renderingContext->getFrontendController()->id);
+            $tableNameAndUid = ['pages', $this->renderingContext->getFrontendController()->id];
         } else {
             $tableNameAndUid = explode(':', $contextRecord);
             if (count($tableNameAndUid) !== 2 || empty($tableNameAndUid[0]) || empty($tableNameAndUid[1]) || !MathUtility::canBeInterpretedAsInteger($tableNameAndUid[1])) {
-                $tableNameAndUid = array('pages', $this->renderingContext->getFrontendController()->id);
+                $tableNameAndUid = ['pages', $this->renderingContext->getFrontendController()->id];
             }
         }
         // TODO: maybe check if the record is available

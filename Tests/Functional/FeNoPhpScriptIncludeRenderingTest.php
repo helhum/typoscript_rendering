@@ -18,18 +18,18 @@ class FeNoPhpScriptIncludeRenderingTest extends AbstractRenderingTestCase
     /**
      * @var array
      */
-    protected $configurationToUseInTestInstance = array(
-        'FE' => array(
+    protected $configurationToUseInTestInstance = [
+        'FE' => [
             'noPHPscriptInclude' => true,
-        ),
-    );
+        ],
+    ];
 
     /**
      * @test
      */
     public function contentIsRenderedWithNoPhpScriptInclusionEnabled()
     {
-        $requestArguments = array('url' => $this->getRenderUrl(1, 1, 'lib.link'));
+        $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.link')];
         $expectedContent = '<a href="/index.php?id=1&amp;L=1" target="_blank">link</a>';
         $this->assertSame($expectedContent, $this->fetchFrontendResponse($requestArguments)->getContent());
     }

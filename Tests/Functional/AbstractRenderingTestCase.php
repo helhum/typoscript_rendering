@@ -26,18 +26,18 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
     /**
      * @var string[]
      */
-    protected $testExtensionsToLoad = array('typo3conf/ext/typoscript_rendering');
+    protected $testExtensionsToLoad = ['typo3conf/ext/typoscript_rendering'];
 
     /**
      * @var string[]
      */
-    protected $coreExtensionsToLoad = array('fluid');
+    protected $coreExtensionsToLoad = ['fluid'];
 
     public function setUp()
     {
         parent::setUp();
         $this->importDataSet(__DIR__ . '/Fixtures/Database/pages.xml');
-        $this->setUpFrontendRootPage(1, array('EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Basic.ts'));
+        $this->setUpFrontendRootPage(1, ['EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Basic.ts']);
     }
 
     /* ***********************************************
@@ -53,7 +53,7 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
      */
     protected function getRenderUrl($pageId, $languageId, $path)
     {
-        $requestArguments = array('id' => $pageId, 'L' => $languageId, 'path' => $path);
+        $requestArguments = ['id' => $pageId, 'L' => $languageId, 'path' => $path];
         return $this->fetchFrontendResponse($requestArguments)->getContent();
     }
 
@@ -71,18 +71,18 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
             $requestUrl = '/?' . GeneralUtility::implodeArrayForUrl('', $requestArguments);
         }
 
-        $arguments = array(
+        $arguments = [
             'documentRoot' => $this->getInstancePath(),
             'requestUrl' => 'http://localhost' . $requestUrl,
-        );
+        ];
 
         $template = new \Text_Template('ntf://Frontend/Request.tpl');
         $template->setVar(
-            array(
+            [
                 'arguments' => var_export($arguments, true),
                 'originalRoot' => ORIGINAL_ROOT,
                 'ntfRoot' => __DIR__ . '/../../.Build/vendor/nimut/testing-framework/',
-            )
+            ]
         );
 
         if (class_exists('PHPUnit_Util_PHP')) {
