@@ -52,7 +52,7 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
      * @return string The rendered link
      *
      */
-    public function render($pluginName, $extensionName, $action = null, array $arguments = array(), $section = '', $format = '', $ajax = true, $contextRecord = 'current')
+    public function render($pluginName, $extensionName, $action = null, array $arguments = [], $section = '', $format = '', $ajax = true, $contextRecord = 'current')
     {
         if ($ajax === true) {
             return $this->getAjaxUri();
@@ -72,7 +72,7 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
         $pluginName = $this->arguments['pluginName'];
         $extensionName = $this->arguments['extensionName'];
         $contextRecord = $this->arguments['contextRecord'];
-        $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : array();
+        $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : [];
         if ($contextRecord === 'current') {
             if (
                 $pluginName !== $this->controllerContext->getRequest()->getPluginName()
@@ -90,10 +90,10 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
         $argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
 
         $uriBuilder->reset()
-            ->setArguments(array_merge(array($argumentPrefix => $arguments), $additionalParams))
+            ->setArguments(array_merge([$argumentPrefix => $arguments], $additionalParams))
             ->setSection($this->arguments['section'])
             ->setAddQueryString(true)
-            ->setArgumentsToBeExcludedFromQueryString(array($argumentPrefix, 'cHash'))
+            ->setArgumentsToBeExcludedFromQueryString([$argumentPrefix, 'cHash'])
             ->setFormat($this->arguments['format'])
             ->setUseCacheHash(true);
 
@@ -114,7 +114,7 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
     {
         $uriBuilder = $this->controllerContext->getUriBuilder();
         $argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
-        $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : array();
+        $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : [];
         if ($this->hasArgument('action')) {
             $arguments['action'] = $this->arguments['action'];
         }
@@ -125,10 +125,10 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
             $arguments['addQueryStringMethod'] = $this->arguments['addQueryStringMethod'];
         }
         $uriBuilder->reset()
-            ->setArguments(array($argumentPrefix => $arguments))
+            ->setArguments([$argumentPrefix => $arguments])
             ->setSection($this->arguments['section'])
             ->setAddQueryString(true)
-            ->setArgumentsToBeExcludedFromQueryString(array($argumentPrefix, 'cHash'))
+            ->setArgumentsToBeExcludedFromQueryString([$argumentPrefix, 'cHash'])
             ->setFormat($this->arguments['format']);
 
         // TYPO3 6.0 compatibility check:

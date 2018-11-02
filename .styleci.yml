@@ -7,7 +7,6 @@ enabled:
   - function_typehint_space
   - hash_to_slash_comment
   - linebreak_after_opening_tag
-  - long_array_syntax
   - lowercase_cast
   - method_separation
   - native_function_casing
@@ -43,6 +42,7 @@ enabled:
   - phpdoc_scalar
   - phpdoc_types
   - self_accessor
+  - short_array_syntax
   - short_scalar_cast
   - single_quote
   - standardize_not_equals

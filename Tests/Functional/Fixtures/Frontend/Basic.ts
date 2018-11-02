@@ -30,6 +30,10 @@ lib.link {
 lib.fluid = FLUIDTEMPLATE
 lib.fluid.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Template.html
 
+lib.viewHelper = FLUIDTEMPLATE
+lib.viewHelper.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/ViewHelperTemplate.html
+tt_content.typoscriptrendering_plugintest.20 = TEXT
+
 page = PAGE
 page {
 	10 = TEXT

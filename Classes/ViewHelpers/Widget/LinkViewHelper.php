@@ -62,7 +62,7 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
      * @return string The rendered link
      *
      */
-    public function render($pluginName, $extensionName, $action = null, array $arguments = array(), $section = '', $format = '', $ajax = true, $contextRecord = 'current')
+    public function render($pluginName, $extensionName, $action = null, array $arguments = [], $section = '', $format = '', $ajax = true, $contextRecord = 'current')
     {
         if ($ajax === true) {
             $uri = $this->getAjaxUri();
@@ -86,7 +86,7 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
         $pluginName = $this->arguments['pluginName'];
         $extensionName = $this->arguments['extensionName'];
         $contextRecord = $this->arguments['contextRecord'];
-        $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : array();
+        $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : [];
         if ($contextRecord === 'current') {
             if (
                 $pluginName !== $this->controllerContext->getRequest()->getPluginName()
@@ -104,10 +104,10 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
         $argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
 
         $uriBuilder->reset()
-            ->setArguments(array_merge(array($argumentPrefix => $arguments), $additionalParams))
+            ->setArguments(array_merge([$argumentPrefix => $arguments], $additionalParams))
             ->setSection($this->arguments['section'])
             ->setAddQueryString(true)
-            ->setArgumentsToBeExcludedFromQueryString(array($argumentPrefix, 'cHash'))
+            ->setArgumentsToBeExcludedFromQueryString([$argumentPrefix, 'cHash'])
             ->setFormat($this->arguments['format'])
             ->setUseCacheHash(true);
 
@@ -128,7 +128,7 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
     {
         $uriBuilder = $this->controllerContext->getUriBuilder();
         $argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
-        $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : array();
+        $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : [];
         if ($this->hasArgument('action')) {
             $arguments['action'] = $this->arguments['action'];
         }
@@ -139,10 +139,10 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
             $arguments['addQueryStringMethod'] = $this->arguments['addQueryStringMethod'];
         }
         $uriBuilder->reset()
-            ->setArguments(array($argumentPrefix => $arguments))
+            ->setArguments([$argumentPrefix => $arguments])
             ->setSection($this->arguments['section'])
             ->setAddQueryString(true)
-            ->setArgumentsToBeExcludedFromQueryString(array($argumentPrefix, 'cHash'))
+            ->setArgumentsToBeExcludedFromQueryString([$argumentPrefix, 'cHash'])
             ->setFormat($this->arguments['format']);
 
         // TYPO3 6.0 compatibility check:

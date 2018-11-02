@@ -38,38 +38,51 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
     protected $configurationManager;
 
     /**
-     * @param string $action Target action
-     * @param array $arguments Arguments
-     * @param string $controller Target controller in UpperCamelCase. If null, current controllerName is used.
-     * @param string $extensionName Target Extension Name (without "tx_" prefix and no underscores). If NULL the current extension name is used
-     * @param string $pluginName Target plugin. If empty, the current plugin name is used
-     * @param int $pageUid target page. See TypoLink destination
-     * @param string $section the anchor to be added to the URI
-     * @param string $format The requested format, e.g. ".html
-     * @param bool $linkAccessRestrictedPages If set, links pointing to access restricted pages will still link to the page even though the page cannot be accessed.
-     * @param array $additionalParams additional query parameters that won't be prefixed like $arguments (overrule $arguments)
-     * @param bool $absolute If set, an absolute URI is rendered
-     * @param bool $addQueryString If set, the current query parameters will be kept in the URI
-     * @param array $argumentsToBeExcludedFromQueryString arguments to be removed from the URI. Only active if $addQueryString = TRUE
-     * @param string $addQueryStringMethod Set which parameters will be kept. Only active if $addQueryString = TRUE
-     * @param string $contextRecord The record that the rendering should depend upon. e.g. current (default: record is fetched from current Extbase plugin), tt_content:12 (tt_content record with uid 12), pages:15 (pages record with uid 15), 'currentPage' record of current page
+     * Initialize arguments
+     *
+     * @api
+     */
+    public function initializeArguments()
+    {
+        $this->registerArgument('action', 'string', 'Target action');
+        $this->registerArgument('arguments', 'array', 'Arguments', false, []);
+        $this->registerArgument('controller', 'string', 'Target controller. If NULL current controllerName is used');
+        $this->registerArgument('extensionName', 'string', 'Target Extension Name (without "tx_" prefix and no underscores). If NULL the current extension name is used');
+        $this->registerArgument('pluginName', 'string', 'Target plugin. If empty, the current plugin name is used');
+        $this->registerArgument('pageUid', 'int', 'Target page. See TypoLink destination');
+        $this->registerArgument('section', 'string', 'The anchor to be added to the URI', false, '');
+        $this->registerArgument('format', 'string', 'The requested format, e.g. ".html', false, '');
+        $this->registerArgument('linkAccessRestrictedPages', 'bool', 'If set, links pointing to access restricted pages will still link to the page even though the page cannot be accessed.', false, false);
+        $this->registerArgument('additionalParams', 'array', 'additional query parameters that won\'t be prefixed like $arguments (overrule $arguments)', false, []);
+        $this->registerArgument('absolute', 'bool', 'If set, an absolute URI is rendered', false, false);
+        $this->registerArgument('addQueryString', 'bool', 'If set, the current query parameters will be kept in the URI', false, false);
+        $this->registerArgument('argumentsToBeExcludedFromQueryString', 'array', 'arguments to be removed from the URI. Only active if $addQueryString = TRUE', false, []);
+        $this->registerArgument('addQueryStringMethod', 'string', 'Set which parameters will be kept. Only active if $addQueryString = TRUE');
+        $this->registerArgument('contextRecord', 'string', 'The record that the rendering should depend upon. e.g. current (default: record is fetched from current Extbase plugin), tt_content:12 (tt_content record with uid 12), pages:15 (pages record with uid 15), \'currentPage\' record of current page', false, 'current');
+    }
+
+    /**
      *
      * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      * @return string Rendered link
      *
      */
-    public function render($action = null, array $arguments = array(), $controller = null, $extensionName = null, $pluginName = null, $pageUid = null, $section = '', $format = '', $linkAccessRestrictedPages = false, array $additionalParams = array(), $absolute = false, $addQueryString = false, array $argumentsToBeExcludedFromQueryString = array(), $addQueryStringMethod = null, $contextRecord = 'current')
+    public function render()
     {
+        $pluginName = $this->arguments['pluginName'];
+        $extensionName = $this->arguments['extensionName'];
+        $contextRecord = $this->arguments['contextRecord'];
+
         if ($pluginName === null) {
-            $pluginName = $this->controllerContext->getRequest()->getPluginName();
+            $pluginName = $this->renderingContext->getControllerContext()->getRequest()->getPluginName();
         }
         if ($extensionName === null) {
-            $extensionName = $this->controllerContext->getRequest()->getControllerExtensionName();
+            $extensionName = $this->renderingContext->getControllerContext()->getRequest()->getControllerExtensionName();
         }
         if ($contextRecord === 'current') {
             if (
-                $pluginName !== $this->controllerContext->getRequest()->getPluginName()
-                || $extensionName !== $this->controllerContext->getRequest()->getControllerExtensionName()
+                $pluginName !== $this->renderingContext->getControllerContext()->getRequest()->getPluginName()
+                || $extensionName !== $this->renderingContext->getControllerContext()->getRequest()->getControllerExtensionName()
             ) {
                 $contextRecord = 'currentPage';
             } else {
@@ -79,20 +92,20 @@ class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractView
         $renderingConfiguration = $this->buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord);
         $additionalParams['tx_typoscriptrendering']['context'] = json_encode($renderingConfiguration);
 
-        $uriBuilder = $this->controllerContext->getUriBuilder();
+        $uriBuilder = $this->renderingContext->getControllerContext()->getUriBuilder();
         $uriBuilder->reset()
-            ->setTargetPageUid($pageUid)
+            ->setTargetPageUid($this->arguments['pageUid'])
             ->setUseCacheHash(true)
-            ->setSection($section)
-            ->setFormat($format)
-            ->setLinkAccessRestrictedPages($linkAccessRestrictedPages)
+            ->setSection($this->arguments['section'])
+            ->setFormat($this->arguments['format'])
+            ->setLinkAccessRestrictedPages($this->arguments['linkAccessRestrictedPages'])
             ->setArguments($additionalParams)
-            ->setCreateAbsoluteUri($absolute)
-            ->setAddQueryString($addQueryString)
-            ->setAddQueryStringMethod($addQueryStringMethod)
-            ->setArgumentsToBeExcludedFromQueryString($argumentsToBeExcludedFromQueryString);
+            ->setCreateAbsoluteUri($this->arguments['absolute'])
+            ->setAddQueryString($this->arguments['addQueryString'])
+            ->setAddQueryStringMethod($this->arguments['addQueryStringMethod'])
+            ->setArgumentsToBeExcludedFromQueryString($this->arguments['argumentsToBeExcludedFromQueryString']);
 
-        return $uriBuilder->uriFor($action, $arguments, $controller, $extensionName, $pluginName);
+        return $uriBuilder->uriFor($this->arguments['action'], $this->arguments['arguments'], $this->arguments['controller'], $extensionName, $pluginName);
     }
 
     /**

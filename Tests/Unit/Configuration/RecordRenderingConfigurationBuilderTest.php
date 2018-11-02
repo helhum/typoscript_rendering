@@ -40,20 +40,20 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
             ->getMock();
         $this->configurationBuilder = new RecordRenderingConfigurationBuilder(new RenderingContext($this->typoScriptControllerMock));
         $this->typoScriptControllerMock->tmpl = new \stdClass();
-        $this->typoScriptControllerMock->tmpl->setup = array(
-            'tt_content.' => array(
-                'list.' => array(
-                    '20.' => array(
+        $this->typoScriptControllerMock->tmpl->setup = [
+            'tt_content.' => [
+                'list.' => [
+                    '20.' => [
                         'news_pi1' => 'USER',
-                        'news_pi1.' => array(),
-                    ),
-                ),
-                'news_pi2.' => array(
+                        'news_pi1.' => [],
+                    ],
+                ],
+                'news_pi2.' => [
                     '20' => 'USER',
-                    '20.' => array(),
-                ),
-            ),
-        );
+                    '20.' => [],
+                ],
+            ],
+        ];
     }
 
     /**
@@ -61,68 +61,68 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
      */
     public function pluginContextDataProvider()
     {
-        return array(
-            'page specified' => array(
+        return [
+            'page specified' => [
                 'News',
                 'Pi1',
                 'pages:1',
-                array('record' => 'pages_1', 'path' => 'tt_content.list.20.news_pi1'),
-            ),
-            'page specified, content element' => array(
+                ['record' => 'pages_1', 'path' => 'tt_content.list.20.news_pi1'],
+            ],
+            'page specified, content element' => [
                 'News',
                 'Pi2',
                 'pages:1',
-                array('record' => 'pages_1', 'path' => 'tt_content.news_pi2.20'),
-            ),
-            'tt_content specified' => array(
+                ['record' => 'pages_1', 'path' => 'tt_content.news_pi2.20'],
+            ],
+            'tt_content specified' => [
                 'News',
                 'Pi1',
                 'tt_content:12',
-                array('record' => 'tt_content_12', 'path' => 'tt_content.list.20.news_pi1'),
-            ),
-            'no record specified falls back to current page' => array(
+                ['record' => 'tt_content_12', 'path' => 'tt_content.list.20.news_pi1'],
+            ],
+            'no record specified falls back to current page' => [
                 'News',
                 'Pi1',
                 '',
-                array('record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'),
-            ),
-            'invalid record specified falls back to current page' => array(
+                ['record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'],
+            ],
+            'invalid record specified falls back to current page' => [
                 'News',
                 'Pi1',
                 ':',
-                array('record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'),
-            ),
-            'uid only specified falls back to current page' => array(
+                ['record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'],
+            ],
+            'uid only specified falls back to current page' => [
                 'News',
                 'Pi1',
                 ':1',
-                array('record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'),
-            ),
-            'tableName only specified falls back to current page' => array(
+                ['record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'],
+            ],
+            'tableName only specified falls back to current page' => [
                 'News',
                 'Pi1',
                 'foo:',
-                array('record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'),
-            ),
-            'too many colons only specified falls back to current page' => array(
+                ['record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'],
+            ],
+            'too many colons only specified falls back to current page' => [
                 'News',
                 'Pi1',
                 'foo:bar:baz',
-                array('record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'),
-            ),
-            'second argument is no int specified falls back to current page' => array(
+                ['record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'],
+            ],
+            'second argument is no int specified falls back to current page' => [
                 'News',
                 'Pi1',
                 'foo:bar',
-                array('record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'),
-            ),
-            'random string specified falls back to current page' => array(
+                ['record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'],
+            ],
+            'random string specified falls back to current page' => [
                 'News',
                 'Pi1',
                 uniqid('foo_', true),
-                array('record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'),
-            ),
-        );
+                ['record' => 'pages_42', 'path' => 'tt_content.list.20.news_pi1'],
+            ],
+        ];
     }
 
     /**
@@ -146,7 +146,7 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
      */
     public function buildingConfigurationThrowsExceptionIfInvalidTypesAreGiven()
     {
-        $this->configurationBuilder->configurationFor('foo', 'PiBar', array());
+        $this->configurationBuilder->configurationFor('foo', 'PiBar', []);
     }
 
     /**

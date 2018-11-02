@@ -21,11 +21,12 @@
     ],
     "license": "GPL-2.0-or-later",
     "require": {
-        "php": ">=5.5.0",
-        "typo3/cms-core": "^6.2 || ^7.6 || ^8.7"
+        "php": ">=7.0.0 <7.4",
+        "typo3/cms-core": "^8.7 || ^9.5"
     },
     "require-dev": {
-        "nimut/testing-framework": "^2.0 || ^3.0"
+        "nimut/testing-framework": "^2.0 || ^3.0 || ^4.0",
+        "typo3/minimal": "^8.7 || ^9.5"
     },
     "autoload": {
         "psr-4": {
@@ -47,8 +48,8 @@
     },
     "scripts": {
         "post-autoload-dump": [
-            "mkdir -p .Build/Web/typo3conf/ext/",
-            "[ -L .Build/Web/typo3conf/ext/typoscript_rendering ] || ln -snvf ../../../../. .Build/Web/typo3conf/ext/typoscript_rendering"
+            "mkdir -p .Build/public/typo3conf/ext/",
+            "[ -L .Build/public/typo3conf/ext/typoscript_rendering ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/typoscript_rendering"
         ]
     },
     "extra": {
@@ -57,8 +58,8 @@
         },
         "typo3/cms": {
             "extension-key": "typoscript_rendering",
-            "cms-package-dir": "{$vendor-dir}/typo3/cms",
-            "web-dir": ".Build/Web"
+            "app-dir": ".Build",
+            "web-dir": ".Build/public"
         }
     }
 }

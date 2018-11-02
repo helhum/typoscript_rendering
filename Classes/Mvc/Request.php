@@ -18,7 +18,7 @@ class Request
     /**
      * @var array
      */
-    protected $arguments = array();
+    protected $arguments = [];
 
     /**
      * @param array $arguments
