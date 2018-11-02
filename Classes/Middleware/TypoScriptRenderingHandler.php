@@ -46,7 +46,9 @@ class TypoScriptRenderingHandler implements MiddlewareInterface
         ob_clean();
 
         //prepare and return final output
-        $GLOBALS['TSFE']->INTincScript();
+        if ($GLOBALS['TSFE']->isINTincScript()) {
+            $GLOBALS['TSFE']->INTincScript();
+        }
 
         $response = GeneralUtility::makeInstance(Response::class);
 
