@@ -105,7 +105,7 @@ class RecordRendererTest extends UnitTestCase
         $tsfeMock = $this->getMockBuilder('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController')
             ->disableOriginalConstructor()
             ->getMock();
-        $pageRepositoryMock = $this->getMockBuilder('TYPO3\\CMS\\Frontend\\Page\\PageRepository')->getMock();
+        $pageRepositoryMock = $this->getMockBuilder('TYPO3\\CMS\\Frontend\\Page\\PageRepository')->disableOriginalConstructor()->getMock();
         $pageRepositoryMock->expects($this->any())->method('getRootLine')->willReturn(
                 [
                     [
