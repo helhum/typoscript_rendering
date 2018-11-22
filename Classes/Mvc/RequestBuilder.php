@@ -25,7 +25,7 @@ class RequestBuilder
      * @return Request
      *
      */
-    public function build($rawRequestArgument)
+    public function build($rawRequestArgument): Request
     {
         if (empty($rawRequestArgument['context']) || !is_string($rawRequestArgument['context'])) {
             throw new Exception('tx_typoscriptrendering|context must not be empty and must be of type string!', 1403793452);
