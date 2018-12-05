@@ -32,6 +32,10 @@ lib.fluid.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Tem
 
 lib.viewHelper = FLUIDTEMPLATE
 lib.viewHelper.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/ViewHelperTemplate.html
+lib.linkViewHelper = FLUIDTEMPLATE
+lib.linkViewHelper.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/LinkViewHelperTemplate.html
+lib.oldViewHelper = FLUIDTEMPLATE
+lib.oldViewHelper.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/OldViewHelperTemplate.html
 tt_content.typoscriptrendering_plugintest.20 = TEXT
 
 page = PAGE

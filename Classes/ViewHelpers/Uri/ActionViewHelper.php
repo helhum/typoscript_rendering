@@ -25,14 +25,14 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
  * = Examples =
  *
  * <code title="URI to the show-action of the current controller">
- * <t:uri.ajaxAction action="show" />
+ * <t:uri.action action="show" />
  * </code>
  * <output>
  * index.php?id=123&tx_typoscriptrendering[context]={"record":"tt_content_123","path":"tt_content.list.20.myextension_plugin"}&tx_myextension_plugin[action]=show&tx_myextension_plugin[controller]=Standard&cHash=xyz
  * (depending on the current page and your TS configuration)
  * </output>
  */
-class AjaxActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class ActionViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
 {
     use CompileWithRenderStatic;
 

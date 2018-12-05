@@ -42,7 +42,30 @@ class RenderingTest extends AbstractRenderingTestCase
     public function viewHelperOutputsUri()
     {
         $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.viewHelper')];
-        $expectedContent = '/index.php?id=1&amp;L=1&amp;tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22tt_content.typoscriptrendering_plugintest.20%22%7D&amp;tx_typoscriptrendering_plugintest%5Bcontroller%5D=Foo&amp;cHash=';
-        $this->assertSame(0, strpos(trim($this->fetchFrontendResponse($requestArguments)->getContent()), $expectedContent));
+        $actualContentWithoutCHash = preg_replace('/&amp;cHash=[a-z0-9]*/', '', trim($this->fetchFrontendResponse($requestArguments)->getContent()));
+        $expectedContent = '/index.php?id=1&amp;L=1&amp;tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22tt_content.typoscriptrendering_plugintest.20%22%7D&amp;tx_typoscriptrendering_plugintest%5Bcontroller%5D=Foo';
+        $this->assertSame($expectedContent, $actualContentWithoutCHash);
+    }
+
+    /**
+     * @test
+     */
+    public function oldViewHelperOutputsUri()
+    {
+        $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.oldViewHelper')];
+        $actualContentWithoutCHash = preg_replace('/&amp;cHash=[a-z0-9]*/', '', trim($this->fetchFrontendResponse($requestArguments)->getContent()));
+        $expectedContent = '/index.php?id=1&amp;L=1&amp;tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22tt_content.typoscriptrendering_plugintest.20%22%7D&amp;tx_typoscriptrendering_plugintest%5Bcontroller%5D=Foo';
+        $this->assertSame($expectedContent, $actualContentWithoutCHash);
+    }
+
+    /**
+     * @test
+     */
+    public function linkViewHelperOutputsUri()
+    {
+        $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.linkViewHelper')];
+        $actualContentWithoutCHash = preg_replace('/&amp;cHash=[a-z0-9]*/', '', trim($this->fetchFrontendResponse($requestArguments)->getContent()));
+        $expectedContent = '<a href="/index.php?id=1&amp;L=1&amp;tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22tt_content.typoscriptrendering_plugintest.20%22%7D&amp;tx_typoscriptrendering_plugintest%5Bcontroller%5D=Foo">Link</a>';
+        $this->assertSame($expectedContent, $actualContentWithoutCHash);
     }
 }

@@ -60,6 +60,11 @@
             "extension-key": "typoscript_rendering",
             "app-dir": ".Build",
             "web-dir": ".Build/public"
+        },
+        "typo3/class-alias-loader": {
+            "class-alias-maps": [
+                "Migrations/Code/ClassAliasMap.php"
+            ]
         }
     }
 }
