@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-namespace Helhum\TyposcriptRendering\ViewHelpers\Uri;
+namespace Helhum\TyposcriptRendering\ViewHelpers\Link;
 
 /*
  * This file is part of the TypoScript Rendering TYPO3 extension.
