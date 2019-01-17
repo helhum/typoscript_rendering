@@ -43,6 +43,7 @@ class TyposcriptRenderingUri extends Uri
         $pluginName = $arguments['pluginName'];
         $extensionName = $arguments['extensionName'];
         $contextRecord = $arguments['contextRecord'];
+        $additionalParams = $arguments['additionalParams'];
 
         if ($pluginName === null) {
             $pluginName = $controllerContext->getRequest()->getPluginName();
