@@ -26,16 +26,27 @@ lib.link {
 		parameter = 1
 	}
 }
+lib.foo = TEXT
+lib.foo.value = FOO
 
 lib.fluid = FLUIDTEMPLATE
 lib.fluid.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Template.html
 
 lib.viewHelper = FLUIDTEMPLATE
 lib.viewHelper.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/ViewHelperTemplate.html
+
 lib.linkViewHelper = FLUIDTEMPLATE
 lib.linkViewHelper.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/LinkViewHelperTemplate.html
+
+lib.cObjectUriViewHelper = FLUIDTEMPLATE
+lib.cObjectUriViewHelper.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/CObjectUriViewHelperTemplate.html
+
+lib.cObjectLinkViewHelper = FLUIDTEMPLATE
+lib.cObjectLinkViewHelper.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/CObjectLinkViewHelperTemplate.html
+
 lib.oldViewHelper = FLUIDTEMPLATE
 lib.oldViewHelper.file = EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/OldViewHelperTemplate.html
+
 tt_content.typoscriptrendering_plugintest.20 = TEXT
 
 page = PAGE
@@ -49,7 +60,6 @@ page {
 		returnLast = url
 	}
 }
-
 
 
 [globalVar = GP:L = 1]

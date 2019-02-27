@@ -40,10 +40,11 @@ class TyposcriptRenderingUri extends Uri
         $arguments = $viewHelperContext->getArguments();
         $controllerContext = $viewHelperContext->getControllerContext();
 
-        $pluginName = $arguments['pluginName'];
-        $extensionName = $arguments['extensionName'];
+        $pluginName = $arguments['pluginName'] ?? null;
+        $extensionName = $arguments['extensionName'] ?? null;
         $contextRecord = $arguments['contextRecord'];
         $additionalParams = $arguments['additionalParams'];
+        $renderingPath = $arguments['typoscriptObjectPath'] ?? null;
 
         if ($pluginName === null) {
             $pluginName = $controllerContext->getRequest()->getPluginName();
@@ -61,7 +62,11 @@ class TyposcriptRenderingUri extends Uri
                 $contextRecord = $viewHelperContext->getContentObject()->currentRecord;
             }
         }
-        $renderingConfiguration = $this->buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord);
+        if ($renderingPath === null) {
+            $renderingConfiguration = $this->buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord);
+        } else {
+            $renderingConfiguration = $this->buildConfigurationForPath($renderingPath, $contextRecord);
+        }
         $additionalParams['tx_typoscriptrendering']['context'] = json_encode($renderingConfiguration);
 
         $uriBuilder = $controllerContext->getUriBuilder();
@@ -77,7 +82,16 @@ class TyposcriptRenderingUri extends Uri
             ->setAddQueryStringMethod($arguments['addQueryStringMethod'])
             ->setArgumentsToBeExcludedFromQueryString($arguments['argumentsToBeExcludedFromQueryString']);
 
-        $this->parseUri($uriBuilder->uriFor($arguments['action'], $arguments['arguments'], $arguments['controller'], $extensionName, $pluginName));
+        $this->parseUri(
+            $uriBuilder->uriFor(
+                $arguments['action'] ?? null,
+                $arguments['arguments'] ?? null,
+                $arguments['controller'] ?? null,
+                $extensionName,
+                $pluginName
+            ),
+            $renderingPath !== null
+        );
     }
 
     /**
@@ -94,5 +108,20 @@ class TyposcriptRenderingUri extends Uri
         $configurationBuilder = new RecordRenderingConfigurationBuilder(new RenderingContext($GLOBALS['TSFE']));
 
         return $configurationBuilder->configurationFor($extensionName, $pluginName, $contextRecordId);
+    }
+
+    private function buildConfigurationForPath(string $renderingPath, string $contextRecordId): array
+    {
+        $configurationBuilder = new RecordRenderingConfigurationBuilder(new RenderingContext($GLOBALS['TSFE']));
+
+        return $configurationBuilder->configurationForPath($renderingPath, $contextRecordId);
+    }
+
+    protected function parseUri($uri, $removeControllerArgument = false)
+    {
+        if ($removeControllerArgument) {
+            $uri = str_replace('&tx__%5Bcontroller%5D=Standard', '', $uri);
+        }
+        parent::parseUri($uri);
     }
 }
