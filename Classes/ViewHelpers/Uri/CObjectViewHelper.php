@@ -21,19 +21,19 @@ use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\Traits\CompileWithRenderStatic;
 
 /**
- * A view helper for creating URIs to render individual extbase actions.
+ * A view helper for creating URIs to render arbitrary TypoScript objects.
  *
  * = Examples =
  *
- * <code title="URI to the show-action of the current controller">
- * <t:uri.action action="show" />
+ * <code title="URI to the given rendering path">
+ * <t:uri.cObject renderingPath="lib.userProfile"/>
  * </code>
  * <output>
- * index.php?id=123&tx_typoscriptrendering[context]={"record":"tt_content_123","path":"tt_content.list.20.myextension_plugin"}&tx_myextension_plugin[action]=show&tx_myextension_plugin[controller]=Standard&cHash=xyz
+ * index.php?id=123&tx_typoscriptrendering[context]={"record":"tt_content_123","path":"lib.userProfile"}&cHash=xyz
  * (depending on the current page and your TS configuration)
  * </output>
  */
-class ActionViewHelper extends AbstractViewHelper
+class CObjectViewHelper extends AbstractViewHelper
 {
     use CompileWithRenderStatic;
 
@@ -44,11 +44,8 @@ class ActionViewHelper extends AbstractViewHelper
      */
     public function initializeArguments()
     {
-        $this->registerArgument('action', 'string', 'Target action');
-        $this->registerArgument('arguments', 'array', 'Arguments', false, []);
-        $this->registerArgument('controller', 'string', 'Target controller. If NULL current controllerName is used');
-        $this->registerArgument('extensionName', 'string', 'Target Extension Name (without "tx_" prefix and no underscores). If NULL the current extension name is used');
-        $this->registerArgument('pluginName', 'string', 'Target plugin. If empty, the current plugin name is used');
+        $this->registerArgument('typoscriptObjectPath', 'string', 'TypoScript rendering path');
+        $this->registerArgument('contextRecord', 'string', 'The record that the rendering should depend upon. e.g. current (default: record is fetched from current Extbase plugin), tt_content:12 (tt_content record with uid 12), pages:15 (pages record with uid 15), \'currentPage\' record of current page', false, 'current');
         $this->registerArgument('pageUid', 'int', 'Target page. See TypoLink destination');
         $this->registerArgument('pageType', 'int', 'Type of the target page. See typolink.parameter', false, 0);
         $this->registerArgument('noCache', 'bool', 'Set this to disable caching for the target page. You should not need this.', false, false);
@@ -60,7 +57,6 @@ class ActionViewHelper extends AbstractViewHelper
         $this->registerArgument('addQueryString', 'bool', 'If set, the current query parameters will be kept in the URI', false, false);
         $this->registerArgument('argumentsToBeExcludedFromQueryString', 'array', 'arguments to be removed from the URI. Only active if $addQueryString = TRUE', false, []);
         $this->registerArgument('addQueryStringMethod', 'string', 'Set which parameters will be kept. Only active if $addQueryString = TRUE');
-        $this->registerArgument('contextRecord', 'string', 'The record that the rendering should depend upon. e.g. current (default: record is fetched from current Extbase plugin), tt_content:12 (tt_content record with uid 12), pages:15 (pages record with uid 15), \'currentPage\' record of current page', false, 'current');
     }
 
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)

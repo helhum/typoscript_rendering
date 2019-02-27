@@ -41,11 +41,28 @@ class RecordRenderingConfigurationBuilder
      * @return string[]
      *
      */
-    public function configurationFor($extensionName, $pluginName, $contextRecord = 'currentPage')
+    public function configurationFor(string $extensionName, string $pluginName, string $contextRecord = 'currentPage')
     {
         list($tableName, $uid) = $this->resolveTableNameAndUidFromContextString($contextRecord);
         $pluginSignature = $this->buildPluginSignature($extensionName, $pluginName);
         $renderingPath = $this->resolveRenderingPath($pluginSignature);
+        return [
+            'record' => $tableName . '_' . $uid,
+            'path' => $renderingPath,
+        ];
+    }
+
+    /**
+     * @param string $renderingPath
+     * @param string $contextRecord
+     *
+     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
+     * @return string[]
+     *
+     */
+    public function configurationForPath(string $renderingPath, string $contextRecord = 'currentPage')
+    {
+        list($tableName, $uid) = $this->resolveTableNameAndUidFromContextString($contextRecord);
         return [
             'record' => $tableName . '_' . $uid,
             'path' => $renderingPath,
@@ -58,16 +75,10 @@ class RecordRenderingConfigurationBuilder
      *
      * @param string $contextRecord
      *
-     * @throws ConfigurationBuildingException
      * @return string[] table name as first and uid as second index of the array
-     *
      */
-    protected function resolveTableNameAndUidFromContextString($contextRecord)
+    protected function resolveTableNameAndUidFromContextString(string $contextRecord)
     {
-        if (!is_string($contextRecord)) {
-            throw new ConfigurationBuildingException(sprintf('Context record must be of type string "%s" given.', gettype($contextRecord)), 1416846201);
-        }
-
         if ($contextRecord === 'currentPage') {
             $tableNameAndUid = ['pages', $this->renderingContext->getFrontendController()->id];
         } else {

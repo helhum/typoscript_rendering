@@ -142,16 +142,6 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
     /**
      * @test
      * @expectedException \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
-     * @expectedExceptionCode 1416846201
-     */
-    public function buildingConfigurationThrowsExceptionIfInvalidTypesAreGiven()
-    {
-        $this->configurationBuilder->configurationFor('foo', 'PiBar', []);
-    }
-
-    /**
-     * @test
-     * @expectedException \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      * @expectedExceptionCode 1466779430
      */
     public function buildingConfigurationThrowsExceptionIfRenderingConfigIsNotFound()

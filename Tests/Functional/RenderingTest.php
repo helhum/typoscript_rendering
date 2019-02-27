@@ -50,6 +50,28 @@ class RenderingTest extends AbstractRenderingTestCase
     /**
      * @test
      */
+    public function cObjectUriViewHelperOutputsUri()
+    {
+        $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.cObjectUriViewHelper')];
+        $actualContentWithoutCHash = preg_replace('/&amp;cHash=[a-z0-9]*/', '', trim($this->fetchFrontendResponse($requestArguments)->getContent()));
+        $expectedContent = '/index.php?id=1&amp;L=1&amp;tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22lib.foo%22%7D';
+        $this->assertSame($expectedContent, $actualContentWithoutCHash);
+    }
+
+    /**
+     * @test
+     */
+    public function cObjectLinkViewHelperOutputsUri()
+    {
+        $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.cObjectLinkViewHelper')];
+        $actualContentWithoutCHash = preg_replace('/&amp;cHash=[a-z0-9]*/', '', trim($this->fetchFrontendResponse($requestArguments)->getContent()));
+        $expectedContent = '<a href="/index.php?id=1&amp;L=1&amp;tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22lib.foo%22%7D">Link</a>';
+        $this->assertSame($expectedContent, $actualContentWithoutCHash);
+    }
+
+    /**
+     * @test
+     */
     public function oldViewHelperOutputsUri()
     {
         $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.oldViewHelper')];
