@@ -9,4 +9,7 @@ defined('TYPO3_MODE') or die();
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['typoscript_rendering']['renderClasses'] = [
         'record' => 'Helhum\\TyposcriptRendering\\Renderer\\RecordRenderer',
     ];
+
+    // Ignore fake controller argument that gets removed
+    $GLOBALS['TYPO3_CONF_VARS']['FE']['cacheHash']['excludedParameters'][] = 'tx__[controller]';
 })();
