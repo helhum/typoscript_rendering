@@ -16,8 +16,9 @@ namespace Helhum\TyposcriptRendering\ViewHelpers\Widget;
 
 use Helhum\TyposcriptRendering\Configuration\RecordRenderingConfigurationBuilder;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper;
 
-class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper
+class LinkViewHelper extends AbstractTagBasedViewHelper
 {
     /**
      * @var string
@@ -45,27 +46,25 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
         $this->registerTagAttribute('rev', 'string', 'Specifies the relationship between the linked document and the current document');
         $this->registerTagAttribute('target', 'string', 'Specifies where to open the linked document');
         $this->registerArgument('addQueryStringMethod', 'string', 'Method to be used for query string');
+        $this->registerArgument('pluginName', 'string', 'Target plugin. If empty, the current plugin name is used');
+        $this->registerArgument('extensionName', 'string', 'Target Extension Name (without "tx_" prefix and no underscores). If NULL the current extension name is used');
+        $this->registerArgument('action', 'string', 'Target action');
+        $this->registerArgument('arguments', 'array', 'Arguments for the controller action, associative array', false, []);
+        $this->registerArgument('section', 'string', 'The anchor to be added to the URI', false, '');
+        $this->registerArgument('format', 'string', 'The requested format, e.g. ".html', false, '');
+        $this->registerArgument('ajax', 'bool', 'Is the link for ajax', false, true);
+        $this->registerArgument('contextRecord', 'string', 'The record that the rendering should depend upon. e.g. current (default: record is fetched from current Extbase plugin), tt_content:12 (tt_content record with uid 12), pages:15 (pages record with uid 15), \'currentPage\' record of current page', false, 'current');
     }
 
     /**
      * Render the Uri.
      *
-     * @param string $pluginName
-     * @param string $extensionName
-     * @param string $action Target action
-     * @param array $arguments Arguments
-     * @param string $section The anchor to be added to the URI
-     * @param string $format The requested format, e.g. ".html
-     * @param bool $ajax true if the URI should be to an Ajax widget, false otherwise.
-     * @param string $contextRecord The record that the rendering should depend upon. e.g. current (default: record is fetched from current Extbase plugin), tt_content:12 (tt_content record with uid 12), pages:15 (pages record with uid 15), 'currentPage' record of current page
-     *
+     * @return string
      * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
-     * @return string The rendered link
-     *
      */
-    public function render($pluginName, $extensionName, $action = null, array $arguments = [], $section = '', $format = '', $ajax = true, $contextRecord = 'current')
+    public function render()
     {
-        if ($ajax === true) {
+        if ($this->arguments['ajax'] === true) {
             $uri = $this->getAjaxUri();
         } else {
             $uri = $this->getWidgetUri();
@@ -90,8 +89,8 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
         $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : [];
         if ($contextRecord === 'current') {
             if (
-                $pluginName !== $this->controllerContext->getRequest()->getPluginName()
-                || $extensionName !== $this->controllerContext->getRequest()->getControllerExtensionName()
+                $pluginName !== $this->renderingContext->getControllerContext()->getRequest()->getPluginName()
+                || $extensionName !== $this->renderingContext->getControllerContext()->getRequest()->getControllerExtensionName()
             ) {
                 $contextRecord = 'currentPage';
             } else {
@@ -101,8 +100,8 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
         $renderingConfiguration = $this->buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord);
         $additionalParams['tx_typoscriptrendering']['context'] = json_encode($renderingConfiguration);
 
-        $uriBuilder = $this->controllerContext->getUriBuilder();
-        $argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
+        $uriBuilder = $this->renderingContext->getControllerContext()->getUriBuilder();
+        $argumentPrefix = $this->renderingContext->getControllerContext()->getRequest()->getArgumentPrefix();
 
         $uriBuilder->reset()
             ->setArguments(array_merge([$argumentPrefix => $arguments], $additionalParams))
@@ -127,8 +126,8 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractTagBasedVi
      */
     protected function getWidgetUri()
     {
-        $uriBuilder = $this->controllerContext->getUriBuilder();
-        $argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
+        $uriBuilder = $this->renderingContext->getControllerContext()->getUriBuilder();
+        $argumentPrefix = $this->renderingContext->getControllerContext()->getRequest()->getArgumentPrefix();
         $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : [];
         if ($this->hasArgument('action')) {
             $arguments['action'] = $this->arguments['action'];
