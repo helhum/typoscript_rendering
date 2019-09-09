@@ -59,8 +59,8 @@ class LinkViewHelper extends AbstractTagBasedViewHelper
     /**
      * Render the Uri.
      *
-     * @return string
      * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
+     * @return string
      */
     public function render()
     {
