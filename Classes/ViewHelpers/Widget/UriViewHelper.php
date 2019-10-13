@@ -47,8 +47,8 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Widget\UriViewHelper
      *
      * @param RenderingContextInterface $renderingContext
      * @param array $arguments
-     * @return string the AJAX URI
      * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
+     * @return string the AJAX URI
      */
     protected static function getAjaxUri(RenderingContextInterface $renderingContext, array $arguments)
     {

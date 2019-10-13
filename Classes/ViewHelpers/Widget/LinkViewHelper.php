@@ -48,8 +48,8 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Widget\LinkViewHelper
     /**
      * Render the Uri.
      *
-     * @return string The rendered link
      * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
+     * @return string The rendered link
      */
     public function render()
     {
@@ -68,9 +68,9 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Widget\LinkViewHelper
     /**
      * Gets the URI for an Ajax Request.
      *
+     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      * @return string the Ajax URI
      *
-     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
      */
     protected function getAjaxUri()
     {
@@ -110,8 +110,8 @@ class LinkViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Widget\LinkViewHelper
      * @param string $extensionName
      * @param string $pluginName
      * @param string $contextRecord
-     * @return string[]
      * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
+     * @return string[]
      */
     public function buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord)
     {
