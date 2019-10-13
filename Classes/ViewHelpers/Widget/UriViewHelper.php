@@ -16,8 +16,10 @@ namespace Helhum\TyposcriptRendering\ViewHelpers\Widget;
 
 use Helhum\TyposcriptRendering\Configuration\RecordRenderingConfigurationBuilder;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
 
-class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
+class UriViewHelper extends \TYPO3\CMS\Fluid\ViewHelpers\Widget\UriViewHelper
 {
     /**
      * @var \TYPO3\CMS\Extbase\Configuration\ConfigurationManager
@@ -34,107 +36,54 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
      */
     public function initializeArguments()
     {
-        $this->registerArgument('addQueryStringMethod', 'string', 'Method to be used for query string');
+        parent::initializeArguments();
+        $this->registerArgument('extensionName', 'string', 'The extension that the rendering should depend upon.', true);
+        $this->registerArgument('pluginName', 'string', 'The plugin that the rendering should depend upon.', true);
+        $this->registerArgument('contextRecord', 'string', 'The record that the rendering should depend upon. e.g. current (default: record is fetched from current Extbase plugin), tt_content:12 (tt_content record with uid 12), pages:15 (pages record with uid 15), \'currentPage\' record of current page');
     }
 
     /**
-     * Render the Uri.
+     * Get the URI for an AJAX Request.
      *
-     * @param string $pluginName
-     * @param string $extensionName
-     * @param string $action Target action
-     * @param array $arguments Arguments
-     * @param string $section The anchor to be added to the URI
-     * @param string $format The requested format, e.g. ".html
-     * @param bool $ajax true if the URI should be to an Ajax widget, false otherwise.
-     * @param string $contextRecord The record that the rendering should depend upon. e.g. current (default: record is fetched from current Extbase plugin), tt_content:12 (tt_content record with uid 12), pages:15 (pages record with uid 15), 'currentPage' record of current page
-     *
+     * @param RenderingContextInterface $renderingContext
+     * @param array $arguments
+     * @return string the AJAX URI
      * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
-     * @return string The rendered link
-     *
      */
-    public function render($pluginName, $extensionName, $action = null, array $arguments = [], $section = '', $format = '', $ajax = true, $contextRecord = 'current')
+    protected static function getAjaxUri(RenderingContextInterface $renderingContext, array $arguments)
     {
-        if ($ajax === true) {
-            return $this->getAjaxUri();
-        }
-        return $this->getWidgetUri();
-    }
-
-    /**
-     * Get the URI for an Ajax Request.
-     *
-     * @throws \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
-     * @return string the Ajax URI
-     *
-     */
-    protected function getAjaxUri()
-    {
-        $pluginName = $this->arguments['pluginName'];
-        $extensionName = $this->arguments['extensionName'];
-        $contextRecord = $this->arguments['contextRecord'];
-        $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : [];
+        $pluginName = $arguments['pluginName'];
+        $extensionName = $arguments['extensionName'];
+        $contextRecord = $arguments['contextRecord'];
+        $arguments = isset($arguments['arguments']) ? $arguments['arguments'] : [];
         if ($contextRecord === 'current') {
             if (
-                $pluginName !== $this->controllerContext->getRequest()->getPluginName()
-                || $extensionName !== $this->controllerContext->getRequest()->getControllerExtensionName()
+                $pluginName !== $renderingContext->getControllerContext()->getRequest()->getPluginName()
+                || $extensionName !== $renderingContext->getControllerContext()->getRequest()->getControllerExtensionName()
             ) {
                 $contextRecord = 'currentPage';
             } else {
-                $contextRecord = $this->configurationManager->getContentObject()->currentRecord;
+                $configurationManager = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Configuration\ConfigurationManager::class);
+                $contextRecord = $configurationManager->getContentObject()->currentRecord;
             }
         }
-        $renderingConfiguration = $this->buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord);
+        $renderingConfiguration = self::buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord);
         $additionalParams['tx_typoscriptrendering']['context'] = json_encode($renderingConfiguration);
 
-        $uriBuilder = $this->controllerContext->getUriBuilder();
-        $argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
+        $uriBuilder = $renderingContext->getControllerContext()->getUriBuilder();
+        $argumentPrefix = $renderingContext->getControllerContext()->getRequest()->getArgumentPrefix();
 
         $uriBuilder->reset()
             ->setArguments(array_merge([$argumentPrefix => $arguments], $additionalParams))
-            ->setSection($this->arguments['section'])
+            ->setSection($arguments['section'])
             ->setAddQueryString(true)
             ->setArgumentsToBeExcludedFromQueryString([$argumentPrefix, 'cHash'])
-            ->setFormat($this->arguments['format'])
+            ->setFormat($arguments['format'])
             ->setUseCacheHash(true);
 
         // TYPO3 6.0 compatibility check:
         if (method_exists($uriBuilder, 'setAddQueryStringMethod')) {
-            $uriBuilder->setAddQueryStringMethod($this->arguments['addQueryStringMethod']);
-        }
-
-        return $uriBuilder->build();
-    }
-
-    /**
-     * Get the URI for a non-AJAX Request.
-     *
-     * @return string the Widget URI
-     */
-    protected function getWidgetUri()
-    {
-        $uriBuilder = $this->controllerContext->getUriBuilder();
-        $argumentPrefix = $this->controllerContext->getRequest()->getArgumentPrefix();
-        $arguments = $this->hasArgument('arguments') ? $this->arguments['arguments'] : [];
-        if ($this->hasArgument('action')) {
-            $arguments['action'] = $this->arguments['action'];
-        }
-        if ($this->hasArgument('format') && $this->arguments['format'] !== '') {
-            $arguments['format'] = $this->arguments['format'];
-        }
-        if ($this->hasArgument('addQueryStringMethod') && $this->arguments['addQueryStringMethod'] !== '') {
-            $arguments['addQueryStringMethod'] = $this->arguments['addQueryStringMethod'];
-        }
-        $uriBuilder->reset()
-            ->setArguments([$argumentPrefix => $arguments])
-            ->setSection($this->arguments['section'])
-            ->setAddQueryString(true)
-            ->setArgumentsToBeExcludedFromQueryString([$argumentPrefix, 'cHash'])
-            ->setFormat($this->arguments['format']);
-
-        // TYPO3 6.0 compatibility check:
-        if (method_exists($uriBuilder, 'setAddQueryStringMethod')) {
-            $uriBuilder->setAddQueryStringMethod($this->arguments['addQueryStringMethod']);
+            $uriBuilder->setAddQueryStringMethod($arguments['addQueryStringMethod']);
         }
 
         return $uriBuilder->build();
@@ -149,7 +98,7 @@ class UriViewHelper extends \TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper
      * @return string[]
      *
      */
-    public function buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord)
+    public static function buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord)
     {
         $configurationBuilder = new RecordRenderingConfigurationBuilder(new RenderingContext($GLOBALS['TSFE']));
         return $configurationBuilder->configurationFor($extensionName, $pluginName, $contextRecord);
