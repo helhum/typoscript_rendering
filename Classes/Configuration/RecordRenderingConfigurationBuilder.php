@@ -41,7 +41,7 @@ class RecordRenderingConfigurationBuilder
      * @return string[]
      *
      */
-    public function configurationFor(string $extensionName, string $pluginName, string $contextRecord = 'currentPage')
+    public function configurationFor(string $extensionName, string $pluginName, string $contextRecord = 'currentPage'): array
     {
         list($tableName, $uid) = $this->resolveTableNameAndUidFromContextString($contextRecord);
         $pluginSignature = $this->buildPluginSignature($extensionName, $pluginName);
@@ -60,7 +60,7 @@ class RecordRenderingConfigurationBuilder
      * @return string[]
      *
      */
-    public function configurationForPath(string $renderingPath, string $contextRecord = 'currentPage')
+    public function configurationForPath(string $renderingPath, string $contextRecord = 'currentPage'): array
     {
         list($tableName, $uid) = $this->resolveTableNameAndUidFromContextString($contextRecord);
         return [
@@ -77,7 +77,7 @@ class RecordRenderingConfigurationBuilder
      *
      * @return string[] table name as first and uid as second index of the array
      */
-    protected function resolveTableNameAndUidFromContextString(string $contextRecord)
+    protected function resolveTableNameAndUidFromContextString(string $contextRecord): array
     {
         if ($contextRecord === 'currentPage') {
             $tableNameAndUid = ['pages', $this->renderingContext->getFrontendController()->id];

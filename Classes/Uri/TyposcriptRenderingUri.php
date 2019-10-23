@@ -18,6 +18,8 @@ use Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException;
 use Helhum\TyposcriptRendering\Configuration\RecordRenderingConfigurationBuilder;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Utility\MathUtility;
+use TYPO3\CMS\Fluid\Core\Widget\WidgetRequest;
 
 class TyposcriptRenderingUri extends Uri
 {
@@ -35,10 +37,20 @@ class TyposcriptRenderingUri extends Uri
         return $newUri;
     }
 
+    public function withWidgetContext(ViewHelperContext $viewHelperContext): self
+    {
+        $newUri = clone $this;
+        $newUri->viewHelperContext = $viewHelperContext;
+        $newUri->parseWidgetContext($viewHelperContext);
+
+        return $newUri;
+    }
+
     private function parseViewHelperContext(ViewHelperContext $viewHelperContext): void
     {
         $arguments = $viewHelperContext->getArguments();
         $controllerContext = $viewHelperContext->getControllerContext();
+        $request = $controllerContext->getRequest();
 
         $pluginName = $arguments['pluginName'] ?? null;
         $extensionName = $arguments['extensionName'] ?? null;
@@ -47,40 +59,42 @@ class TyposcriptRenderingUri extends Uri
         $renderingPath = $arguments['typoscriptObjectPath'] ?? null;
 
         if ($pluginName === null) {
-            $pluginName = $controllerContext->getRequest()->getPluginName();
+            $pluginName = $request->getPluginName();
         }
         if ($extensionName === null) {
-            $extensionName = $controllerContext->getRequest()->getControllerExtensionName();
+            $extensionName = $request->getControllerExtensionName();
         }
         if ($contextRecord === 'current') {
             if (
-                $pluginName !== $controllerContext->getRequest()->getPluginName()
-                || $extensionName !== $controllerContext->getRequest()->getControllerExtensionName()
+                $pluginName !== $request->getPluginName()
+                || $extensionName !== $request->getControllerExtensionName()
             ) {
                 $contextRecord = 'currentPage';
             } else {
                 $contextRecord = $viewHelperContext->getContentObject()->currentRecord;
             }
         }
-        if ($renderingPath === null) {
-            $renderingConfiguration = $this->buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord);
-        } else {
+        if (is_string($renderingPath)) {
             $renderingConfiguration = $this->buildConfigurationForPath($renderingPath, $contextRecord);
+        } else {
+            $renderingConfiguration = $this->buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord);
         }
         $additionalParams['tx_typoscriptrendering']['context'] = json_encode($renderingConfiguration);
 
         $uriBuilder = $controllerContext->getUriBuilder();
         $uriBuilder->reset()
-            ->setTargetPageUid($arguments['pageUid'])
             ->setUseCacheHash(true)
-            ->setSection($arguments['section'])
-            ->setFormat($arguments['format'])
-            ->setLinkAccessRestrictedPages($arguments['linkAccessRestrictedPages'])
+            ->setSection($arguments['section'] ?? '')
+            ->setFormat($arguments['format'] ?? 'html')
+            ->setLinkAccessRestrictedPages($arguments['linkAccessRestrictedPages'] ?? false)
             ->setArguments($additionalParams)
-            ->setCreateAbsoluteUri($arguments['absolute'])
-            ->setAddQueryString($arguments['addQueryString'])
-            ->setAddQueryStringMethod($arguments['addQueryStringMethod'])
-            ->setArgumentsToBeExcludedFromQueryString($arguments['argumentsToBeExcludedFromQueryString']);
+            ->setCreateAbsoluteUri($arguments['absolute'] ?? false)
+            ->setAddQueryString($arguments['addQueryString'] ?? false)
+            ->setAddQueryStringMethod('GET')
+            ->setArgumentsToBeExcludedFromQueryString($arguments['argumentsToBeExcludedFromQueryString'] ?? []);
+        if (MathUtility::canBeInterpretedAsInteger($arguments['pageUid'])) {
+            $uriBuilder->setTargetPageUid((int)$arguments['pageUid']);
+        }
 
         $this->parseUri(
             $uriBuilder->uriFor(
@@ -90,6 +104,74 @@ class TyposcriptRenderingUri extends Uri
                 $extensionName,
                 $pluginName
             ),
+            $renderingPath !== null
+        );
+    }
+
+    private function parseWidgetContext(ViewHelperContext $viewHelperContext): void
+    {
+        $arguments = $viewHelperContext->getArguments();
+        $controllerContext = $viewHelperContext->getControllerContext();
+        /** @var $request WidgetRequest $request */
+        $request = $controllerContext->getRequest();
+        if (!$request instanceof WidgetRequest) {
+            throw new \RuntimeException('Called from wrong context', 1589401907);
+        }
+
+        $pluginName = $arguments['pluginName'] ?? null;
+        $extensionName = $arguments['extensionName'] ?? null;
+        $contextRecord = $arguments['contextRecord'];
+        $additionalParams = $arguments['additionalParams'];
+        $renderingPath = $arguments['typoscriptObjectPath'] ?? null;
+
+        if ($pluginName === null) {
+            $pluginName = $request->getWidgetContext()->getParentPluginName();
+        }
+        if ($extensionName === null) {
+            $extensionName = $request->getWidgetContext()->getParentExtensionName();
+        }
+        if ($contextRecord === 'current') {
+            if (
+                $pluginName !== $request->getWidgetContext()->getParentPluginName()
+                || $extensionName !== $request->getWidgetContext()->getParentExtensionName()
+            ) {
+                $contextRecord = 'currentPage';
+            } else {
+                $contextRecord = $viewHelperContext->getContentObject()->currentRecord;
+            }
+        }
+        if (is_string($renderingPath)) {
+            $renderingConfiguration = $this->buildConfigurationForPath($renderingPath, $contextRecord);
+        } else {
+            $renderingConfiguration = $this->buildTypoScriptRenderingConfiguration($extensionName, $pluginName, $contextRecord);
+        }
+        // @deprecated ajax set to false is deprecated
+        if ($arguments['ajax']) {
+            $additionalParams['tx_typoscriptrendering']['context'] = json_encode($renderingConfiguration);
+        }
+
+        // adding the widget prefix for the arguments, use them together with the additionalParams
+        $additionalParams[$request->getArgumentPrefix()] = $arguments['arguments'];
+
+        $uriBuilder = $controllerContext->getUriBuilder();
+        $uriBuilder->reset()
+            ->setUseCacheHash(true)
+            ->setSection($arguments['section'] ?? '')
+            ->setFormat($arguments['format'] ?? 'html')
+            ->setLinkAccessRestrictedPages($arguments['linkAccessRestrictedPages'] ?? false)
+            ->setArguments($additionalParams)
+            ->setCreateAbsoluteUri($arguments['absolute'] ?? false)
+            ->setAddQueryString($arguments['addQueryString'] ?? false)
+            ->setAddQueryStringMethod('GET')
+            ->setArgumentsToBeExcludedFromQueryString($arguments['argumentsToBeExcludedFromQueryString'] ?? []);
+        if (MathUtility::canBeInterpretedAsInteger($arguments['pageUid'])) {
+            $uriBuilder->setTargetPageUid((int)$arguments['pageUid']);
+        }
+
+        $uri = $uriBuilder->build();
+
+        $this->parseUri(
+            $uri,
             $renderingPath !== null
         );
     }
