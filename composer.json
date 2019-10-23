@@ -39,7 +39,6 @@
         }
     },
     "replace": {
-        "typoscript_rendering": "self.version",
         "typo3-ter/typoscript-rendering": "self.version"
     },
     "config": {
