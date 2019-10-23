@@ -1,5 +1,5 @@
 <?php
-$EM_CONF[$_EXTKEY] = array (
+$EM_CONF[$_EXTKEY] = [
   'title' => 'TypoScript Rendering',
   'description' => 'Can render a TypoScript path by URL, especially useful for Ajax dispatching',
   'category' => 'Rendering',
@@ -11,18 +11,14 @@ $EM_CONF[$_EXTKEY] = array (
   'createDirs' => '',
   'clearCacheOnLoad' => 0,
   'version' => '2.2.2',
-  'constraints' =>
-  array (
-    'depends' =>
-    array (
+  'constraints' => [
+    'depends' => [
       'php' => '7.2.0-7.3.999',
       'typo3' => '9.5.0-9.5.99',
-    ),
-    'conflicts' =>
-    array (
-    ),
-    'suggests' =>
-    array (
-    ),
-  ),
-);
+    ],
+    'conflicts' => [
+    ],
+    'suggests' => [
+    ],
+  ],
+];
