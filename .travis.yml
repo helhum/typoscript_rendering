@@ -27,7 +27,6 @@ before_install:
 
 install:
   - composer require typo3/minimal=$TYPO3_VERSION
-  - export TYPO3_PATH_WEB="$PWD/.Build/Web"
 
 script:
   - >
