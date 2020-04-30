@@ -72,14 +72,14 @@ class TyposcriptRenderingUri extends Uri
         $uriBuilder = $controllerContext->getUriBuilder();
         $uriBuilder->reset()
             ->setTargetPageUid($arguments['pageUid'])
-            ->setUseCacheHash(true)
+            ->setUseCacheHash()
             ->setSection($arguments['section'])
             ->setFormat($arguments['format'])
             ->setLinkAccessRestrictedPages($arguments['linkAccessRestrictedPages'])
             ->setArguments($additionalParams)
             ->setCreateAbsoluteUri($arguments['absolute'])
             ->setAddQueryString($arguments['addQueryString'])
-            ->setAddQueryStringMethod($arguments['addQueryStringMethod'])
+            ->setAddQueryStringMethod($arguments['addQueryStringMethod'] ?? '')
             ->setArgumentsToBeExcludedFromQueryString($arguments['argumentsToBeExcludedFromQueryString']);
 
         $this->parseUri(
