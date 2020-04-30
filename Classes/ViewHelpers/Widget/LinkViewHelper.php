@@ -118,7 +118,7 @@ class LinkViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedV
         }
 
         // TYPO3 < 10 compatibility:
-        if(VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getNumericTypo3Version()) < 10) {
+        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getNumericTypo3Version()) < 10) {
             $uriBuilder->setUseCacheHash(true);
         }
 

@@ -83,7 +83,7 @@ class TyposcriptRenderingUri extends Uri
             ->setArgumentsToBeExcludedFromQueryString($arguments['argumentsToBeExcludedFromQueryString']);
 
         // TYPO3 < 10 compatibility:
-        if(VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getNumericTypo3Version()) < 10) {
+        if (VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getNumericTypo3Version()) < 10) {
             $uriBuilder->setUseCacheHash(true);
         }
 
