@@ -18,6 +18,7 @@ use Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException;
 use Helhum\TyposcriptRendering\Configuration\RecordRenderingConfigurationBuilder;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 class TyposcriptRenderingUri extends Uri
 {
@@ -72,7 +73,6 @@ class TyposcriptRenderingUri extends Uri
         $uriBuilder = $controllerContext->getUriBuilder();
         $uriBuilder->reset()
             ->setTargetPageUid($arguments['pageUid'])
-            ->setUseCacheHash()
             ->setSection($arguments['section'])
             ->setFormat($arguments['format'])
             ->setLinkAccessRestrictedPages($arguments['linkAccessRestrictedPages'])
@@ -81,6 +81,11 @@ class TyposcriptRenderingUri extends Uri
             ->setAddQueryString($arguments['addQueryString'])
             ->setAddQueryStringMethod($arguments['addQueryStringMethod'] ?? '')
             ->setArgumentsToBeExcludedFromQueryString($arguments['argumentsToBeExcludedFromQueryString']);
+
+        // TYPO3 < 10 compatibility:
+        if(VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getNumericTypo3Version()) < 10) {
+            $uriBuilder->setUseCacheHash(true);
+        }
 
         $this->parseUri(
             $uriBuilder->uriFor(

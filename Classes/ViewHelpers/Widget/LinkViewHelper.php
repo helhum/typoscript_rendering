@@ -16,6 +16,7 @@ namespace Helhum\TyposcriptRendering\ViewHelpers\Widget;
 
 use Helhum\TyposcriptRendering\Configuration\RecordRenderingConfigurationBuilder;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 class LinkViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedViewHelper
 {
@@ -109,12 +110,16 @@ class LinkViewHelper extends \TYPO3Fluid\Fluid\Core\ViewHelper\AbstractTagBasedV
             ->setSection($this->arguments['section'])
             ->setAddQueryString(true)
             ->setArgumentsToBeExcludedFromQueryString([$argumentPrefix, 'cHash'])
-            ->setFormat($this->arguments['format'])
-            ->setUseCacheHash(true);
+            ->setFormat($this->arguments['format']);
 
         // TYPO3 6.0 compatibility check:
         if (method_exists($uriBuilder, 'setAddQueryStringMethod')) {
             $uriBuilder->setAddQueryStringMethod($this->arguments['addQueryStringMethod']);
+        }
+
+        // TYPO3 < 10 compatibility:
+        if(VersionNumberUtility::convertVersionNumberToInteger(VersionNumberUtility::getNumericTypo3Version()) < 10) {
+            $uriBuilder->setUseCacheHash(true);
         }
 
         return $uriBuilder->build();
