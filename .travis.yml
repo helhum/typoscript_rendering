@@ -72,7 +72,7 @@ jobs:
 
     - stage: 🚢 to TER
       if: tag IS present
-      php: 7.0
+      php: 7.2
       install: skip
       before_script: skip
       script:
