@@ -26,7 +26,7 @@ before_install:
   - phpenv config-rm xdebug.ini
 
 install:
-  - composer require typo3/minimal=$TYPO3_VERSION
+  - composer require --dev typo3/minimal=$TYPO3_VERSION
 
 script:
   - >
@@ -51,6 +51,21 @@ script:
 jobs:
   fast_finish: true
   include:
+    - stage: test
+      php: 7.4
+      env: TYPO3_VERSION=^10.4
+    - stage: test
+      php: 7.3
+      env: TYPO3_VERSION=^10.4
+    - stage: test
+      php: 7.2
+      env: TYPO3_VERSION=^10.4
+    - stage: test
+      php: 7.4
+      env: TYPO3_VERSION=^9.5
+    - stage: test
+      php: 7.3
+      env: TYPO3_VERSION=^9.5
     - stage: test
       php: 7.2
       env: TYPO3_VERSION=^9.5
