@@ -17,6 +17,8 @@ use Helhum\TyposcriptRendering\Mvc\Request;
 use Helhum\TyposcriptRendering\Renderer\RecordRenderer;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -32,6 +34,11 @@ class RecordRendererTest extends UnitTestCase
     protected function setUp()
     {
         $this->renderer = $this->getAccessibleMock('Helhum\\TyposcriptRendering\\Renderer\\RecordRenderer', ['dummy']);
+    }
+
+    protected function tearDown()
+    {
+        GeneralUtility::purgeInstances();
     }
 
     /**
@@ -102,11 +109,11 @@ class RecordRendererTest extends UnitTestCase
     public function configurationIsGeneratedCorrectlyFromRequest(array $requestArguments, array $expectedConfiguration, $pageId = '42')
     {
         /** @var TypoScriptFrontendController|\PHPUnit_Framework_MockObject_MockObject $tsfeMock */
-        $tsfeMock = $this->getMockBuilder('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController')
+        $tsfeMock = $this->getMockBuilder(TypoScriptFrontendController::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $pageRepositoryMock = $this->getMockBuilder('TYPO3\\CMS\\Frontend\\Page\\PageRepository')->disableOriginalConstructor()->getMock();
-        $pageRepositoryMock->expects($this->any())->method('getRootLine')->willReturn(
+        $rootlineUtilityMock = $this->getMockBuilder(RootlineUtility::class)->disableOriginalConstructor()->getMock();
+        $rootlineUtilityMock->expects($this->any())->method('get')->willReturn(
                 [
                     [
                         'uid' => '1',
@@ -114,8 +121,8 @@ class RecordRendererTest extends UnitTestCase
                     ],
                 ]
         );
+        GeneralUtility::addInstance(RootlineUtility::class, $rootlineUtilityMock);
         $tsfeMock->id = $pageId;
-        $tsfeMock->sys_page = $pageRepositoryMock;
         $contextFixture = new RenderingContext($tsfeMock);
         $requestFixture = new Request($requestArguments);
 
