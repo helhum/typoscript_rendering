@@ -42,6 +42,7 @@ class TypoScriptRenderingMiddleware implements MiddlewareInterface
         }
         $this->ensureRequiredEnvironment();
 
+        $frontendController->config['config']['debug'] = 0;
         $frontendController->config['config']['disableAllHeaderCode'] = 1;
         $frontendController->pSetup = [
             '10' => 'TYPOSCRIPT_RENDERING',
