@@ -25,6 +25,7 @@ use TYPO3\CMS\Core\Exception;
 class TypoScriptRenderingMiddleware implements MiddlewareInterface
 {
     private const argumentNamespace = 'tx_typoscriptrendering';
+    private const defaultContentType = 'text/html';
 
     /**
      * Dispatches the request to the corresponding typoscript_rendering configuration
@@ -37,12 +38,15 @@ class TypoScriptRenderingMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $frontendController = $GLOBALS['TSFE'];
+        $requestedContentType = $frontendController->config['config']['contentType'] ?? self::defaultContentType;
         if (!$frontendController->isGeneratePage() || !isset($request->getQueryParams()[self::argumentNamespace])) {
-            return $handler->handle($request);
+            return $this->amendContentType($handler->handle($request), $requestedContentType);
         }
         $this->ensureRequiredEnvironment();
 
+        $frontendController->config['config']['debug'] = 0;
         $frontendController->config['config']['disableAllHeaderCode'] = 1;
+        $frontendController->config['config']['disableCharsetHeader'] = 0;
         $frontendController->pSetup = [
             '10' => 'TYPOSCRIPT_RENDERING',
             '10.' => [
@@ -50,7 +54,31 @@ class TypoScriptRenderingMiddleware implements MiddlewareInterface
             ],
         ];
 
-        return $handler->handle($request);
+        return $this->amendContentType($handler->handle($request), $requestedContentType);
+    }
+
+    /**
+     * TYPO3's frontend rendering allows to influence the content type,
+     * but does not store this information in cache, which leads to wrong content type
+     * to be sent when content if pulled from cache.
+     * We add a tiny workaround, that allows plugins to set the content type, but also
+     * store the content type in cache:
+     *
+     * $GLOBALS['TSFE']->setContentType('application/json');
+     * $GLOBALS['TSFE']->config['config']['contentType'] = 'application/json';
+     *
+     * @param ResponseInterface $response
+     * @param string $requestedContentType
+     * @return ResponseInterface
+     */
+    private function amendContentType(ResponseInterface $response, string $requestedContentType): ResponseInterface
+    {
+        $originalContentTypeHeader = $response->getHeader('Content-Type')[0];
+        if (strpos($originalContentTypeHeader, self::defaultContentType) === 0 && strpos($originalContentTypeHeader, $requestedContentType) === false) {
+            $response = $response->withHeader('Content-Type', \str_replace(self::defaultContentType, $requestedContentType, $originalContentTypeHeader));
+        }
+
+        return $response;
     }
 
     /**
