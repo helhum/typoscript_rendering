@@ -161,7 +161,7 @@ class TyposcriptRenderingUri extends Uri
             ->setLinkAccessRestrictedPages($arguments['linkAccessRestrictedPages'] ?? false)
             ->setArguments($additionalParams)
             ->setCreateAbsoluteUri($arguments['absolute'] ?? false)
-            ->setAddQueryString($arguments['addQueryString'] ?? false)
+            ->setAddQueryString(true)
             ->setAddQueryStringMethod('GET')
             ->setArgumentsToBeExcludedFromQueryString($arguments['argumentsToBeExcludedFromQueryString'] ?? []);
         if (MathUtility::canBeInterpretedAsInteger($arguments['pageUid'])) {
