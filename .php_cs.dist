@@ -69,6 +69,7 @@ return PhpCsFixer\Config::create()
         'trailing_comma_in_multiline_array' => true,
         'whitespace_after_comma_in_array' => true,
     ])
+    ->setRiskyAllowed(true)
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->in(__DIR__)

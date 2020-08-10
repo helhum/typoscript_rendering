@@ -114,7 +114,7 @@ class RecordRendererTest extends UnitTestCase
             ->getMock();
         $rootlineUtilityMock = $this->getMockBuilder(RootlineUtility::class)->disableOriginalConstructor()->getMock();
         $rootlineUtilityMock->expects($this->any())->method('get')->willReturn(
-                [
+            [
                     [
                         'uid' => '1',
                         'pid' => '0',

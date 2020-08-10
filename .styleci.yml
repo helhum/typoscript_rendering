@@ -50,6 +50,8 @@ enabled:
   - trailing_comma_in_multiline_array
   - whitespace_after_comma_in_array
 
+risky: true
+
 finder:
   name:
     - "*.php"
