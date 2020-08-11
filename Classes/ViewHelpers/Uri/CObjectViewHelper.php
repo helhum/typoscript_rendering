@@ -61,6 +61,10 @@ class CObjectViewHelper extends AbstractViewHelper
 
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
+        // We need to set a dummy name here, otherwise Extbase will bail out when trying to determine the
+        // plugin name from the request, which isn't set when in Extbase context
+        // For this view helper, we don't need this anyway, so we set this to a dummy value
+        $arguments['extensionName'] = 'DummyName';
         $uri = (new TyposcriptRenderingUri())->withViewHelperContext(
             new ViewHelperContext(
                 $renderingContext,
