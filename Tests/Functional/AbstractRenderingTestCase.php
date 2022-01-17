@@ -17,6 +17,7 @@ namespace Helhum\TyposcriptRendering\Tests\Functional;
 use Nimut\TestingFramework\Http\Response;
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use PHPUnit\Util\PHP\DefaultPhpProcess;
+use SebastianBergmann\Template\Template;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -29,16 +30,17 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
      */
     protected $testExtensionsToLoad = ['typo3conf/ext/typoscript_rendering'];
 
-    /**
-     * @var string[]
-     */
-    protected $coreExtensionsToLoad = ['fluid'];
+    protected $configurationToUseInTestInstance = [
+        'SYS' => [
+            'encryptionKey' => '42',
+        ],
+    ];
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->importDataSet(__DIR__ . '/Fixtures/Database/pages.xml');
-        $this->setUpFrontendRootPage(1, ['EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Basic.ts']);
+        $this->setUpFrontendRootPage(1, ['EXT:typoscript_rendering/Tests/Functional/Fixtures/Frontend/Basic.typoscript']);
     }
 
     /* ***********************************************
@@ -55,6 +57,7 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
     protected function getRenderUrl($pageId, $languageId, $path)
     {
         $requestArguments = ['id' => $pageId, 'L' => $languageId, 'path' => $path];
+
         return $this->fetchFrontendResponse($requestArguments)->getContent();
     }
 
@@ -77,7 +80,8 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
             'requestUrl' => 'http://localhost' . $requestUrl,
         ];
 
-        $template = new \Text_Template('ntf://Frontend/Request.tpl');
+        $textTemplateClass = class_exists(Template::class) ? Template::class : \Text_Template::class;
+        $template = new $textTemplateClass('ntf://Frontend/Request.tpl');
         $template->setVar(
             [
                 'arguments' => var_export($arguments, true),
@@ -86,11 +90,7 @@ abstract class AbstractRenderingTestCase extends FunctionalTestCase
             ]
         );
 
-        if (class_exists('PHPUnit_Util_PHP')) {
-            $php = \PHPUnit_Util_PHP::factory();
-        } else {
-            $php = DefaultPhpProcess::factory();
-        }
+        $php = DefaultPhpProcess::factory();
         $response = $php->runJob($template->render());
         $result = json_decode($response['stdout'], true);
 

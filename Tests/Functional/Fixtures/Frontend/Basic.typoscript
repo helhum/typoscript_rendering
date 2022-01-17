@@ -60,8 +60,3 @@ page {
 		returnLast = url
 	}
 }
-
-
-[globalVar = GP:L = 1]
-config.sys_language_uid = 1
-[end]
