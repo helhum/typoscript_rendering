@@ -4,7 +4,21 @@
 		<uid>1</uid>
 		<pid>0</pid>
 		<title>Root</title>
+		<slug>/</slug>
 		<doktype>1</doktype>
+		<sys_language_uid>0</sys_language_uid>
+		<deleted>0</deleted>
+		<perms_everybody>15</perms_everybody>
+	</pages>
+	<pages>
+		<uid>2</uid>
+		<pid>0</pid>
+		<title>Root</title>
+		<slug>/</slug>
+		<doktype>1</doktype>
+		<sys_language_uid>1</sys_language_uid>
+		<l10n_parent>1</l10n_parent>
+		<l10n_source>1</l10n_source>
 		<deleted>0</deleted>
 		<perms_everybody>15</perms_everybody>
 	</pages>

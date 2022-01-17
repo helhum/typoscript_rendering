@@ -14,80 +14,87 @@ namespace Helhum\TyposcriptRendering\Tests\Functional;
  *
  */
 
+use TYPO3\CMS\Core\Package\Cache\PackageCacheInterface;
+
 class RenderingTest extends AbstractRenderingTestCase
 {
     /**
      * @test
      */
-    public function urlGeneratedRespectAbsRefPrefixAndLinkVarsAndTarget()
+    public function urlGeneratedRespectAbsRefPrefixAndLinkVarsAndTarget(): void
     {
         $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.link')];
-        $expectedContent = '<a href="/index.php?id=1&amp;L=1" target="_blank">link</a>';
-        $this->assertSame($expectedContent, trim($this->fetchFrontendResponse($requestArguments)->getContent()));
+        $expectedContent = '<a href="/da/" target="_blank">link</a>';
+        $actualContent = trim($this->fetchFrontendResponse($requestArguments)->getContent());
+        $this->assertSame($expectedContent, $actualContent);
     }
 
     /**
      * @test
      */
-    public function emailViewHelperWorksAlsoWithSpamProtection()
+    public function emailViewHelperWorksAlsoWithSpamProtection(): void
     {
         $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.fluid')];
-        $expectedContent = '<a href="javascript:linkTo_UnCryptMailto(\'ocknvq,kphqBjgnjwo0kq\');">info(AT)helhum(DOT)io</a>';
-        $this->assertSame($expectedContent, trim($this->fetchFrontendResponse($requestArguments)->getContent()));
+        $expectedContent = '<a href="#" data-mailto-token="ocknvq,kphqBjgnjwo0kq" data-mailto-vector="2">info(AT)helhum(DOT)io</a>';
+        if (!interface_exists(PackageCacheInterface::class)) {
+            $expectedContent = '<a href="javascript:linkTo_UnCryptMailto(%27ocknvq%2CkphqBjgnjwo0kq%27);">info(AT)helhum(DOT)io</a>';
+        }
+        $actualContent = trim($this->fetchFrontendResponse($requestArguments)->getContent());
+        $this->assertSame($expectedContent, $actualContent);
     }
 
     /**
      * @test
      */
-    public function viewHelperOutputsUri()
+    public function viewHelperOutputsUri(): void
     {
         $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.viewHelper')];
-        $actualContentWithoutCHash = preg_replace('/&amp;cHash=[a-z0-9]*/', '', trim($this->fetchFrontendResponse($requestArguments)->getContent()));
-        $expectedContent = '/index.php?id=1&amp;L=1&amp;tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22tt_content.typoscriptrendering_plugintest.20%22%7D&amp;tx_typoscriptrendering_plugintest%5Bcontroller%5D=Foo';
-        $this->assertSame($expectedContent, $actualContentWithoutCHash);
+        $expectedContent = '/da/?tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22tt_content.typoscriptrendering_plugintest.20%22%7D&amp;tx_typoscriptrendering_plugintest%5Bcontroller%5D=Foo&amp;cHash=05eba63c2a1d73fbdb2e4702e42fab9e';
+        $actualContent = trim($this->fetchFrontendResponse($requestArguments)->getContent());
+        $this->assertSame($expectedContent, $actualContent);
     }
 
     /**
      * @test
      */
-    public function cObjectUriViewHelperOutputsUri()
+    public function cObjectUriViewHelperOutputsUri(): void
     {
         $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.cObjectUriViewHelper')];
-        $actualContentWithoutCHash = preg_replace('/&amp;cHash=[a-z0-9]*/', '', trim($this->fetchFrontendResponse($requestArguments)->getContent()));
-        $expectedContent = '/index.php?id=1&amp;L=1&amp;tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22lib.foo%22%7D';
-        $this->assertSame($expectedContent, $actualContentWithoutCHash);
+        $expectedContent = '/da/?tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22lib.foo%22%7D&amp;cHash=cb0d36cfb1819138f899192eda25168e';
+        $actualContent = trim($this->fetchFrontendResponse($requestArguments)->getContent());
+        $this->assertSame($expectedContent, $actualContent);
     }
 
     /**
      * @test
      */
-    public function cObjectLinkViewHelperOutputsUri()
+    public function cObjectLinkViewHelperOutputsUri(): void
     {
         $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.cObjectLinkViewHelper')];
-        $actualContentWithoutCHash = preg_replace('/&amp;cHash=[a-z0-9]*/', '', trim($this->fetchFrontendResponse($requestArguments)->getContent()));
-        $expectedContent = '<a href="/index.php?id=1&amp;L=1&amp;tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22lib.foo%22%7D">Link</a>';
-        $this->assertSame($expectedContent, $actualContentWithoutCHash);
+        $expectedContent = '<a href="/da/?tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22lib.foo%22%7D&amp;cHash=cb0d36cfb1819138f899192eda25168e">Link</a>';
+        $actualContent = trim($this->fetchFrontendResponse($requestArguments)->getContent());
+        $this->assertSame($expectedContent, $actualContent);
     }
 
     /**
      * @test
      */
-    public function oldViewHelperOutputsUri()
+    public function oldViewHelperOutputsUri(): void
     {
         $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.oldViewHelper')];
-        $actualContentWithoutCHash = preg_replace('/&amp;cHash=[a-z0-9]*/', '', trim($this->fetchFrontendResponse($requestArguments)->getContent()));
-        $expectedContent = '/index.php?id=1&amp;L=1&amp;tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22tt_content.typoscriptrendering_plugintest.20%22%7D&amp;tx_typoscriptrendering_plugintest%5Bcontroller%5D=Foo';
-        $this->assertSame($expectedContent, $actualContentWithoutCHash);
+        $expectedContent = '/da/?tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22tt_content.typoscriptrendering_plugintest.20%22%7D&amp;tx_typoscriptrendering_plugintest%5Bcontroller%5D=Foo&amp;cHash=05eba63c2a1d73fbdb2e4702e42fab9e';
+        $actualContent = trim($this->fetchFrontendResponse($requestArguments)->getContent());
+        $this->assertSame($expectedContent, $actualContent);
     }
 
     /**
      * @test
      */
-    public function linkViewHelperOutputsUri()
+    public function linkViewHelperOutputsUri(): void
     {
         $requestArguments = ['url' => $this->getRenderUrl(1, 1, 'lib.linkViewHelper')];
-        $actualContentWithoutCHash = preg_replace('/&amp;cHash=[a-z0-9]*/', '', trim($this->fetchFrontendResponse($requestArguments)->getContent()));
-        $expectedContent = '<a href="/index.php?id=1&amp;L=1&amp;tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22tt_content.typoscriptrendering_plugintest.20%22%7D&amp;tx_typoscriptrendering_plugintest%5Bcontroller%5D=Foo">Link</a>';
-        $this->assertSame($expectedContent, $actualContentWithoutCHash);
+        $expectedContent = '<a href="/da/?tx_typoscriptrendering%5Bcontext%5D=%7B%22record%22%3A%22pages_1%22%2C%22path%22%3A%22tt_content.typoscriptrendering_plugintest.20%22%7D&amp;tx_typoscriptrendering_plugintest%5Bcontroller%5D=Foo&amp;cHash=05eba63c2a1d73fbdb2e4702e42fab9e">Link</a>';
+        $actualContent = trim($this->fetchFrontendResponse($requestArguments)->getContent());
+        $this->assertSame($expectedContent, $actualContent);
     }
 }

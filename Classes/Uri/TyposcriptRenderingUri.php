@@ -82,8 +82,11 @@ class TyposcriptRenderingUri extends Uri
         $additionalParams['tx_typoscriptrendering']['context'] = json_encode($renderingConfiguration);
 
         $uriBuilder = $controllerContext->getUriBuilder();
-        $uriBuilder->reset()
-            ->setUseCacheHash(true)
+        $uriBuilder->reset();
+        if (is_callable([$uriBuilder, 'setUseCacheHash'])) {
+            $uriBuilder->setUseCacheHash(true);
+        }
+        $uriBuilder
             ->setSection($arguments['section'] ?? '')
             ->setFormat($arguments['format'] ?? 'html')
             ->setLinkAccessRestrictedPages($arguments['linkAccessRestrictedPages'] ?? false)
@@ -101,8 +104,8 @@ class TyposcriptRenderingUri extends Uri
                 $arguments['action'] ?? null,
                 $arguments['arguments'] ?? null,
                 $arguments['controller'] ?? null,
-                $extensionName,
-                $pluginName
+                $extensionName ?? '',
+                $pluginName ?? ''
             ),
             $renderingPath !== null
         );

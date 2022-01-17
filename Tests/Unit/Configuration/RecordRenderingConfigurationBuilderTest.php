@@ -13,9 +13,11 @@ namespace Helhum\TyposcriptRendering\Tests\Unit\Configuration;
  *
  */
 
+use Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException;
 use Helhum\TyposcriptRendering\Configuration\RecordRenderingConfigurationBuilder;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
@@ -29,11 +31,11 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
     protected $configurationBuilder;
 
     /**
-     * @var TypoScriptFrontendController|\PHPUnit_Framework_MockObject_MockObject
+     * @var TypoScriptFrontendController|MockObject
      */
     protected $typoScriptControllerMock;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->typoScriptControllerMock = $this->getMockBuilder('TYPO3\\CMS\\Frontend\\Controller\\TypoScriptFrontendController')
             ->disableOriginalConstructor()
@@ -56,10 +58,7 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function pluginContextDataProvider()
+    public function pluginContextDataProvider(): array
     {
         return [
             'page specified' => [
@@ -133,7 +132,7 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
      * @test
      * @dataProvider pluginContextDataProvider
      */
-    public function buildingConfigurationWorks($extensionName, $pluginName, $recordContext, array $expectedConfiguration)
+    public function buildingConfigurationWorks($extensionName, $pluginName, $recordContext, array $expectedConfiguration): void
     {
         $this->typoScriptControllerMock->id = 42;
         $this->assertSame($expectedConfiguration, $this->configurationBuilder->configurationFor($extensionName, $pluginName, $recordContext));
@@ -141,11 +140,11 @@ class RecordRenderingConfigurationBuilderTest extends UnitTestCase
 
     /**
      * @test
-     * @expectedException \Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException
-     * @expectedExceptionCode 1466779430
      */
-    public function buildingConfigurationThrowsExceptionIfRenderingConfigIsNotFound()
+    public function buildingConfigurationThrowsExceptionIfRenderingConfigIsNotFound(): void
     {
+        $this->expectException(ConfigurationBuildingException::class);
+        $this->expectExceptionCode(1466779430);
         $this->configurationBuilder->configurationFor('News', 'Pi3', 'current');
     }
 }

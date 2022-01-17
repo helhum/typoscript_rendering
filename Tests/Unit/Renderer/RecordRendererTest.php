@@ -17,6 +17,8 @@ use Helhum\TyposcriptRendering\Mvc\Request;
 use Helhum\TyposcriptRendering\Renderer\RecordRenderer;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 use Nimut\TestingFramework\TestCase\UnitTestCase;
+use PHPUnit\Framework\MockObject\MockObject;
+use TYPO3\CMS\Core\Tests\AccessibleObjectInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\RootlineUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -27,16 +29,16 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 class RecordRendererTest extends UnitTestCase
 {
     /**
-     * @var RecordRenderer|\PHPUnit_Framework_MockObject_MockObject|\TYPO3\CMS\Core\Tests\AccessibleObjectInterface
+     * @var RecordRenderer|MockObject|AccessibleObjectInterface
      */
     protected $renderer;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->renderer = $this->getAccessibleMock('Helhum\\TyposcriptRendering\\Renderer\\RecordRenderer', ['dummy']);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         GeneralUtility::purgeInstances();
     }
@@ -44,7 +46,7 @@ class RecordRendererTest extends UnitTestCase
     /**
      * @return array
      */
-    public function configurationDataProvider()
+    public function configurationDataProvider(): array
     {
         return [
             'record id only' => [
@@ -106,9 +108,9 @@ class RecordRendererTest extends UnitTestCase
      * @test
      * @dataProvider configurationDataProvider
      */
-    public function configurationIsGeneratedCorrectlyFromRequest(array $requestArguments, array $expectedConfiguration, $pageId = '42')
+    public function configurationIsGeneratedCorrectlyFromRequest(array $requestArguments, array $expectedConfiguration, $pageId = '42'): void
     {
-        /** @var TypoScriptFrontendController|\PHPUnit_Framework_MockObject_MockObject $tsfeMock */
+        /** @var TypoScriptFrontendController|MockObject $tsfeMock */
         $tsfeMock = $this->getMockBuilder(TypoScriptFrontendController::class)
             ->disableOriginalConstructor()
             ->getMock();

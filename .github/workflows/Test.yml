@@ -1,0 +1,101 @@
+name: Test
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+jobs:
+
+    Tests:
+        name: 'T3 ${{ matrix.typo3 }} - PHP ${{ matrix.php }} - ${{ matrix.dependency-version }}'
+        runs-on: ubuntu-18.04
+
+        strategy:
+            fail-fast: false
+            matrix:
+                typo3: [ '^9.5.0', '^10.4.0', '^11.5.0' ]
+                php: [ '7.4' ]
+                dependency-version: [ lowest, stable ]
+                experimental: [ false ]
+                include:
+                    -   php: 7.2
+                        typo3: '^9.5.0'
+                        dependency-version: stable
+                        experimental: false
+                    -   php: 7.3
+                        typo3: '^9.5.0'
+                        dependency-version: stable
+                        experimental: false
+                    -   php: 7.2
+                        typo3: '^10.4.0'
+                        dependency-version: stable
+                        experimental: false
+                    -   php: 7.3
+                        typo3: '^10.4.0'
+                        dependency-version: stable
+                        experimental: false
+                    -   php: 8.0
+                        typo3: '^11.5.0'
+                        dependency-version: stable
+                        experimental: true
+
+        continue-on-error: ${{ matrix.experimental }}
+
+        steps:
+            -   name: Start database server
+                run: sudo /etc/init.d/mysql start
+
+            -   name: Checkout
+                uses: actions/checkout@v2
+
+            -   name: Composer Cache Vars
+                id: composer-cache-vars
+                run: |
+                    echo "::set-output name=dir::$(composer config cache-files-dir)"
+                    echo "::set-output name=timestamp::$(date +"%s")"
+
+            -   name: Cache Composer dependencies
+                uses: actions/cache@v2
+                with:
+                    path: ${{ steps.composer-cache-vars.outputs.dir }}
+                    key: ${{ runner.os }}-composer-${{ matrix.typo3 }}-${{ matrix.dependency-version }}-${{ matrix.php }}-${{ steps.composer-cache-vars.outputs.timestamp }}
+                    restore-keys: |
+                        ${{ runner.os }}-composer-${{ matrix.typo3 }}-${{ matrix.dependency-version }}-${{ matrix.php }}-
+                        ${{ runner.os }}-composer-${{ matrix.typo3 }}-${{ matrix.dependency-version }}-
+                        ${{ runner.os }}-composer-${{ matrix.typo3 }}-
+                        ${{ runner.os }}-composer-
+
+            -   name: Set up PHP Version ${{ matrix.php }}
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php }}
+                    tools: composer:v2
+                    coverage: none
+
+            -   name: Environment Check
+                run: |
+                    php --version
+                    composer --version
+
+            -   name: Validate composer.json and composer.lock
+                run: composer validate
+
+            -   name: Install
+                run: |
+                    composer update --with typo3/cms-core="${{ matrix.typo3 }}" --prefer-${{ matrix.dependency-version }} --prefer-dist --no-interaction
+
+            -   name: Lint
+                run: .Build/bin/parallel-lint --exclude vendor --exclude .Build .
+
+            -   name: Unit Tests
+                run: .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit/
+
+            -   name: Functional Tests
+                env:
+                    typo3DatabaseName: typo3
+                    typo3DatabaseHost: '127.0.0.1'
+                    typo3DatabaseUsername: root
+                    typo3DatabasePassword: root
+                run: .Build/bin/phpunit -c .Build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml Tests/Functional/
