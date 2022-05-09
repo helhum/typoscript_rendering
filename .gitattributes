@@ -1,0 +1,8 @@
+# Please keep the lines in this file sorted.
+/.editorconfig export-ignore
+/.gitattributes export-ignore
+/.github/ export-ignore
+/.gitignore export-ignore
+/.php_cs.dist export-ignore
+/.styleci.yml export-ignore
+/Tests/ export-ignore
