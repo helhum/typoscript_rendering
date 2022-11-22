@@ -73,12 +73,18 @@ class TypoScriptRenderingMiddleware implements MiddlewareInterface
      */
     private function amendContentType(ResponseInterface $response, string $requestedContentType): ResponseInterface
     {
-        $originalContentTypeHeader = $response->getHeader('Content-Type')[0];
-        if (strpos($originalContentTypeHeader, self::defaultContentType) === 0 && strpos($originalContentTypeHeader, $requestedContentType) === false) {
-            $response = $response->withHeader('Content-Type', \str_replace(self::defaultContentType, $requestedContentType, $originalContentTypeHeader));
+        if ($response->getStatusCode() !== 200
+            || !$response->hasHeader('Content-Type')
+        ) {
+            return $response;
         }
-
-        return $response;
+        $originalContentTypeHeader = $response->getHeader('Content-Type')[0];
+        if (strpos($originalContentTypeHeader, self::defaultContentType) !== 0
+            || strpos($originalContentTypeHeader, $requestedContentType) === 0
+        ) {
+            return $response;
+        }
+        return $response->withHeader('Content-Type', \str_replace(self::defaultContentType, $requestedContentType, $originalContentTypeHeader));
     }
 
     /**
