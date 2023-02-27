@@ -55,7 +55,7 @@ class TyposcriptRenderingUri extends Uri
         $pluginName = $arguments['pluginName'] ?? null;
         $extensionName = $arguments['extensionName'] ?? null;
         $contextRecord = $arguments['contextRecord'];
-        $additionalParams = $arguments['additionalParams'];
+        $additionalParams = $arguments['additionalParams'] ?? [];
         $renderingPath = $arguments['typoscriptObjectPath'] ?? null;
 
         if ($pluginName === null) {
@@ -95,8 +95,10 @@ class TyposcriptRenderingUri extends Uri
             ->setAddQueryString($arguments['addQueryString'] ?? false)
             ->setAddQueryStringMethod('GET')
             ->setArgumentsToBeExcludedFromQueryString($arguments['argumentsToBeExcludedFromQueryString'] ?? []);
-        if (MathUtility::canBeInterpretedAsInteger($arguments['pageUid'])) {
-            $uriBuilder->setTargetPageUid((int)$arguments['pageUid']);
+
+        $targetPageUid = $arguments['pageUid'] ?? null;
+        if (MathUtility::canBeInterpretedAsInteger($targetPageUid)) {
+            $uriBuilder->setTargetPageUid((int)$targetPageUid);
         }
 
         $this->parseUri(
@@ -124,7 +126,7 @@ class TyposcriptRenderingUri extends Uri
         $pluginName = $arguments['pluginName'] ?? null;
         $extensionName = $arguments['extensionName'] ?? null;
         $contextRecord = $arguments['contextRecord'];
-        $additionalParams = $arguments['additionalParams'];
+        $additionalParams = $arguments['additionalParams'] ?? [];
         $renderingPath = $arguments['typoscriptObjectPath'] ?? null;
 
         if ($pluginName === null) {
@@ -167,8 +169,10 @@ class TyposcriptRenderingUri extends Uri
             ->setAddQueryString(true)
             ->setAddQueryStringMethod('GET')
             ->setArgumentsToBeExcludedFromQueryString($arguments['argumentsToBeExcludedFromQueryString'] ?? []);
-        if (MathUtility::canBeInterpretedAsInteger($arguments['pageUid'])) {
-            $uriBuilder->setTargetPageUid((int)$arguments['pageUid']);
+
+        $targetPageUid = $arguments['pageUid'] ?? null;
+        if (MathUtility::canBeInterpretedAsInteger($targetPageUid)) {
+            $uriBuilder->setTargetPageUid((int)$targetPageUid);
         }
 
         $uri = $uriBuilder->build();
