@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+
 namespace Helhum\TyposcriptRendering\Uri;
 
 /*
@@ -45,14 +46,12 @@ class ViewHelperContext
         $this->configurationManager = $configurationManager;
     }
 
-    public function getControllerContext(): ControllerContext
+
+    public function getRequest()
     {
         if ($this->renderingContext instanceof \TYPO3\CMS\Fluid\Core\Rendering\RenderingContext) {
-            return $this->renderingContext->getControllerContext();
+            return $this->renderingContext->getRequest();
         }
-
-        // Let PHP deal with the error, we don't operate in other contexts anyway
-        return null;
     }
 
     public function getArguments(): array
@@ -62,7 +61,7 @@ class ViewHelperContext
 
     public function getContentObject(): ContentObjectRenderer
     {
-        $configurationManager = $this->configurationManager ?? GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationManager::class);
+        $configurationManager = $this->configurationManager ?? GeneralUtility::makeInstance(ConfigurationManager::class);
         $contentObject = $configurationManager->getContentObject();
 
         return $contentObject ?? GeneralUtility::makeInstance(ContentObjectRenderer::class);

@@ -40,10 +40,9 @@ class TypoScriptRenderingMiddleware implements MiddlewareInterface
         $frontendController = $GLOBALS['TSFE'];
         $requestedContentType = $frontendController->config['config']['contentType'] ?? self::defaultContentType;
         if (!$frontendController->isGeneratePage() || !isset($request->getQueryParams()[self::argumentNamespace])) {
-            return $this->amendContentType($handler->handle($request), $requestedContentType);
+            return $handler->handle($request);# $this->amendContentType(, $requestedContentType);
         }
         $this->ensureRequiredEnvironment();
-
         $frontendController->config['config']['debug'] = 0;
         $frontendController->config['config']['disableAllHeaderCode'] = 1;
         $frontendController->config['config']['disableCharsetHeader'] = 0;

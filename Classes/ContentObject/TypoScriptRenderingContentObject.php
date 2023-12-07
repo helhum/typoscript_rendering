@@ -40,7 +40,6 @@ class TypoScriptRenderingContentObject extends AbstractContentObject
      */
     public function __construct(ContentObjectRenderer $cObj, RequestBuilder $requestBuilder = null, array $renderer = null)
     {
-        parent::__construct($cObj);
         $this->requestBuilder = $requestBuilder ?: new RequestBuilder();
         $this->renderer = $renderer ?: $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['typoscript_rendering']['renderClasses'];
     }

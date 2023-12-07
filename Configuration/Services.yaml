@@ -1,0 +1,13 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    Helhum\TyposcriptRendering\:
+        resource: '../Classes/*'
+
+    Helhum\TyposcriptRendering\ContentObject\TypoScriptRenderingContentObject:
+        tags:
+            - name: frontend.contentobject
+              identifier: 'TYPOSCRIPT_RENDERING'
