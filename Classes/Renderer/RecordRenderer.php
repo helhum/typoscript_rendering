@@ -85,7 +85,7 @@ class RecordRenderer implements RenderingInterface
 
         if ($table === 'pages') {
             // Allow rendering of a root page which has pid === 0 and would be denied otherwise
-            $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, $id)->get();
+            $rootLine = GeneralUtility::makeInstance(RootlineUtility::class, (int)$id)->get();
             // $rootLine[0] is the root page. Check if the page we're going to render is a root page.
             // We explicitly ignore the case where the to be rendered id is in another root line (multi domain setup)
             // as this would require an additional record lookup. The use case for this is very limited anyway

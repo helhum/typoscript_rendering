@@ -18,6 +18,7 @@ use Helhum\TyposcriptRendering\Configuration\ConfigurationBuildingException;
 use Helhum\TyposcriptRendering\Configuration\RecordRenderingConfigurationBuilder;
 use Helhum\TyposcriptRendering\Renderer\RenderingContext;
 use TYPO3\CMS\Core\Http\Uri;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Fluid\Core\Widget\WidgetRequest;
 
@@ -49,8 +50,7 @@ class TyposcriptRenderingUri extends Uri
     private function parseViewHelperContext(ViewHelperContext $viewHelperContext): void
     {
         $arguments = $viewHelperContext->getArguments();
-        $controllerContext = $viewHelperContext->getControllerContext();
-        $request = $controllerContext->getRequest();
+        $request = $viewHelperContext->getRequest();
 
         $pluginName = $arguments['pluginName'] ?? null;
         $extensionName = $arguments['extensionName'] ?? null;
@@ -81,7 +81,7 @@ class TyposcriptRenderingUri extends Uri
         }
         $additionalParams['tx_typoscriptrendering']['context'] = json_encode($renderingConfiguration);
 
-        $uriBuilder = $controllerContext->getUriBuilder();
+        $uriBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder::class);
         $uriBuilder->reset();
         if (is_callable([$uriBuilder, 'setUseCacheHash'])) {
             $uriBuilder->setUseCacheHash(true);
@@ -93,7 +93,6 @@ class TyposcriptRenderingUri extends Uri
             ->setArguments($additionalParams)
             ->setCreateAbsoluteUri($arguments['absolute'] ?? false)
             ->setAddQueryString($arguments['addQueryString'] ?? false)
-            ->setAddQueryStringMethod('GET')
             ->setArgumentsToBeExcludedFromQueryString($arguments['argumentsToBeExcludedFromQueryString'] ?? []);
         if (MathUtility::canBeInterpretedAsInteger($arguments['pageUid'])) {
             $uriBuilder->setTargetPageUid((int)$arguments['pageUid']);
@@ -115,7 +114,6 @@ class TyposcriptRenderingUri extends Uri
     {
         $arguments = $viewHelperContext->getArguments();
         $controllerContext = $viewHelperContext->getControllerContext();
-        /** @var $request WidgetRequest $request */
         $request = $controllerContext->getRequest();
         if (!$request instanceof WidgetRequest) {
             throw new \RuntimeException('Called from wrong context', 1589401907);
@@ -202,7 +200,7 @@ class TyposcriptRenderingUri extends Uri
         return $configurationBuilder->configurationForPath($renderingPath, $contextRecordId);
     }
 
-    protected function parseUri($uri, $removeControllerArgument = false)
+    protected function parseUri($uri, $removeControllerArgument = false): void
     {
         if ($removeControllerArgument) {
             $uri = str_replace('&tx__%5Bcontroller%5D=Standard', '', $uri);
