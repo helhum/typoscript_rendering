@@ -82,7 +82,7 @@ class TyposcriptRenderingUri extends Uri
         $additionalParams['tx_typoscriptrendering']['context'] = json_encode($renderingConfiguration);
 
         $uriBuilder = GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder::class);
-        $uriBuilder->reset();
+        $uriBuilder->reset()->setRequest($request);
         if (is_callable([$uriBuilder, 'setUseCacheHash'])) {
             $uriBuilder->setUseCacheHash(true);
         }
